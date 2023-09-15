@@ -14,6 +14,7 @@
 		CC2EF65E2AB487A100B0D42A /* ManelMangaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF65D2AB487A100B0D42A /* ManelMangaTests.swift */; };
 		CC2EF6682AB487A100B0D42A /* ManelMangaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */; };
 		CC2EF66A2AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */; };
+		CC2EF6782AB4884400B0D42A /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = CC2EF6772AB4884400B0D42A /* SwiftSoup */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CC2EF6782AB4884400B0D42A /* SwiftSoup in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,6 +145,9 @@
 			dependencies = (
 			);
 			name = ManelManga;
+			packageProductDependencies = (
+				CC2EF6772AB4884400B0D42A /* SwiftSoup */,
+			);
 			productName = ManelManga;
 			productReference = CC2EF6492AB487A000B0D42A /* ManelManga.app */;
 			productType = "com.apple.product-type.application";
@@ -215,6 +220,9 @@
 				Base,
 			);
 			mainGroup = CC2EF6402AB487A000B0D42A;
+			packageReferences = (
+				CC2EF6762AB4884400B0D42A /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+			);
 			productRefGroup = CC2EF64A2AB487A000B0D42A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -583,6 +591,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		CC2EF6762AB4884400B0D42A /* XCRemoteSwiftPackageReference "SwiftSoup" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/scinfu/SwiftSoup";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		CC2EF6772AB4884400B0D42A /* SwiftSoup */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CC2EF6762AB4884400B0D42A /* XCRemoteSwiftPackageReference "SwiftSoup" */;
+			productName = SwiftSoup;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = CC2EF6412AB487A000B0D42A /* Project object */;
 }
