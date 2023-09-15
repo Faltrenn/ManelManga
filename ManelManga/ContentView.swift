@@ -141,11 +141,10 @@ struct MangaView: View {
                             link = volume
                             page = .Volume
                         } label: {
-                            Text(volume)
+                            Text("Volume: \(volumes.count - volumes.firstIndex(of: volume)!)")
                                 .font(.title3)
                                 .bold()
                         }
-                        
                     }
                 }
                 .onAppear {
