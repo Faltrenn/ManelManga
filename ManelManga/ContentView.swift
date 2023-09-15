@@ -13,27 +13,88 @@ enum Pages {
 }
 
 struct ContentView: View {
-    @State var link = "https://imperioscans.com.br/manga/pick-me-up/44/" // Link do volume
+    @State var link = "" // Link do volume
     
     @State var page: Pages = .Home
+    
+    @State var mangas = [
+        Manga(
+            name: "Pick Me Up!",
+            image: "https://i0.wp.com/imperioscans.com.br/wp-content/uploads/2023/09/Pick_me_up_-_Piccoma.jpg?fit=193%2C273&ssl=1",
+            link: "https://imperioscans.com.br/manga/pick-me-up/01/",
+            actualVolume: 1
+        ),
+        Manga(
+            name: "The Mad Gate",
+            image: "https://i0.wp.com/imperioscans.com.br/wp-content/uploads/2023/09/TMG_poster_full_res.webp?fit=180%2C278&ssl=1",
+            link: "https://imperioscans.com.br/manga/the-mad-gate/01/",
+            actualVolume: 1
+        )
+    ]
     
     var body: some View {
         ZStack {
             switch page {
             case .Home:
-                VStack {
-                    TextField(text: $link) {
-                        Text("Link do Volume")
+                ScrollView {
+                    VStack(alignment: .leading) {
+                        ForEach(mangas, id: \.self) { manga in
+                            MangaCard(manga: manga, page: $page, link: $link)
+                        }
                     }
-                    Button("Ler") {
-                        page = .Volume
-                    }
+                    .padding()
                 }
-                .padding()
             case .Volume:
                 VolumeView(link: link, page: $page)
             }
         }
+    }
+}
+
+struct Manga: Hashable {
+    let name: String
+    let image: String
+    let link: String
+    let actualVolume: Int
+    
+}
+
+struct MangaCard: View {
+    let manga: Manga
+    @Binding var page: Pages
+    @Binding var link: String
+    
+    var body: some View {
+        Button(action: {
+            link = manga.link
+            page = .Volume
+        }, label: {
+            HStack {
+                AsyncImage(url: URL(string: manga.image)) { image in
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 150)
+                } placeholder: {
+                    Rectangle()
+                        .frame(width: 150, height: 150)
+                        .overlay {
+                            ProgressView()
+                        }
+                }
+                VStack(alignment: .leading) {
+                    Text(manga.name)
+                        .font(.title)
+                        .bold()
+                        .frame(maxWidth: .infinity)
+                    Text("Volume atual: \(manga.actualVolume)")
+                    Spacer()
+                }
+                .font(.title3)
+            }
+            .background(.gray)
+        })
+        .foregroundColor(.white)
     }
 }
 
