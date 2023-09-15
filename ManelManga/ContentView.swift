@@ -8,8 +8,38 @@
 import SwiftUI
 import SwiftSoup
 
+enum Pages {
+    case Home, Volume
+}
+
 struct ContentView: View {
-    let link = "https://imperioscans.com.br/manga/pick-me-up/44/" // Link do volume
+    @State var link = "https://imperioscans.com.br/manga/pick-me-up/44/" // Link do volume
+    
+    @State var page: Pages = .Home
+    
+    var body: some View {
+        ZStack {
+            switch page {
+            case .Home:
+                VStack {
+                    TextField(text: $link) {
+                        Text("Link do Volume")
+                    }
+                    Button("Ler") {
+                        page = .Volume
+                    }
+                }
+                .padding()
+            case .Volume:
+                VolumeView(link: link, page: $page)
+            }
+        }
+    }
+}
+
+struct VolumeView: View {
+    let link: String
+    @Binding var page: Pages
     
     @State var images: [String] = []
     
@@ -36,26 +66,39 @@ struct ContentView: View {
     }
     
     var body: some View {
-        VStack {
-            ScrollView {
-                VStack(spacing: 0) {
-                    ForEach(images, id: \.self) { image in
-                        AsyncImage(url: URL(string: image)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            ProgressView()
+        ZStack(alignment: .top) {
+            HStack {
+                Button(action: {
+                    page = .Home
+                }, label: {
+                  Text("Voltar")
+                        .font(.title2)
+                })
+                Spacer()
+            }
+            .padding()
+            .zIndex(1)
+            VStack {
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(images, id: \.self) { image in
+                            AsyncImage(url: URL(string: image)) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                            } placeholder: {
+                                ProgressView()
+                            }
                         }
                     }
                 }
             }
-        }
-        .onAppear {
-            guard let url = URL(string: link) else {
-                return
+            .onAppear {
+                guard let url = URL(string: link) else {
+                    return
+                }
+                getVolume(url: url)
             }
-            getVolume(url: url)
         }
     }
 }
