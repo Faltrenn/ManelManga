@@ -1,0 +1,588 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CC2EF64D2AB487A000B0D42A /* ManelMangaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */; };
+		CC2EF64F2AB487A000B0D42A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF64E2AB487A000B0D42A /* ContentView.swift */; };
+		CC2EF6512AB487A100B0D42A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC2EF6502AB487A100B0D42A /* Assets.xcassets */; };
+		CC2EF6542AB487A100B0D42A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CC2EF6532AB487A100B0D42A /* Preview Assets.xcassets */; };
+		CC2EF65E2AB487A100B0D42A /* ManelMangaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF65D2AB487A100B0D42A /* ManelMangaTests.swift */; };
+		CC2EF6682AB487A100B0D42A /* ManelMangaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */; };
+		CC2EF66A2AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CC2EF65A2AB487A100B0D42A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC2EF6412AB487A000B0D42A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC2EF6482AB487A000B0D42A;
+			remoteInfo = ManelManga;
+		};
+		CC2EF6642AB487A100B0D42A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CC2EF6412AB487A000B0D42A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CC2EF6482AB487A000B0D42A;
+			remoteInfo = ManelManga;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CC2EF6492AB487A000B0D42A /* ManelManga.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManelManga.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaApp.swift; sourceTree = "<group>"; };
+		CC2EF64E2AB487A000B0D42A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		CC2EF6502AB487A100B0D42A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		CC2EF6532AB487A100B0D42A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		CC2EF6592AB487A100B0D42A /* ManelMangaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManelMangaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC2EF65D2AB487A100B0D42A /* ManelMangaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaTests.swift; sourceTree = "<group>"; };
+		CC2EF6632AB487A100B0D42A /* ManelMangaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManelMangaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaUITests.swift; sourceTree = "<group>"; };
+		CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CC2EF6462AB487A000B0D42A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF6562AB487A100B0D42A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF6602AB487A100B0D42A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CC2EF6402AB487A000B0D42A = {
+			isa = PBXGroup;
+			children = (
+				CC2EF64B2AB487A000B0D42A /* ManelManga */,
+				CC2EF65C2AB487A100B0D42A /* ManelMangaTests */,
+				CC2EF6662AB487A100B0D42A /* ManelMangaUITests */,
+				CC2EF64A2AB487A000B0D42A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CC2EF64A2AB487A000B0D42A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CC2EF6492AB487A000B0D42A /* ManelManga.app */,
+				CC2EF6592AB487A100B0D42A /* ManelMangaTests.xctest */,
+				CC2EF6632AB487A100B0D42A /* ManelMangaUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CC2EF64B2AB487A000B0D42A /* ManelManga */ = {
+			isa = PBXGroup;
+			children = (
+				CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */,
+				CC2EF64E2AB487A000B0D42A /* ContentView.swift */,
+				CC2EF6502AB487A100B0D42A /* Assets.xcassets */,
+				CC2EF6522AB487A100B0D42A /* Preview Content */,
+			);
+			path = ManelManga;
+			sourceTree = "<group>";
+		};
+		CC2EF6522AB487A100B0D42A /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				CC2EF6532AB487A100B0D42A /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		CC2EF65C2AB487A100B0D42A /* ManelMangaTests */ = {
+			isa = PBXGroup;
+			children = (
+				CC2EF65D2AB487A100B0D42A /* ManelMangaTests.swift */,
+			);
+			path = ManelMangaTests;
+			sourceTree = "<group>";
+		};
+		CC2EF6662AB487A100B0D42A /* ManelMangaUITests */ = {
+			isa = PBXGroup;
+			children = (
+				CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */,
+				CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */,
+			);
+			path = ManelMangaUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CC2EF6482AB487A000B0D42A /* ManelManga */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC2EF66D2AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelManga" */;
+			buildPhases = (
+				CC2EF6452AB487A000B0D42A /* Sources */,
+				CC2EF6462AB487A000B0D42A /* Frameworks */,
+				CC2EF6472AB487A000B0D42A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ManelManga;
+			productName = ManelManga;
+			productReference = CC2EF6492AB487A000B0D42A /* ManelManga.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CC2EF6582AB487A100B0D42A /* ManelMangaTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC2EF6702AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelMangaTests" */;
+			buildPhases = (
+				CC2EF6552AB487A100B0D42A /* Sources */,
+				CC2EF6562AB487A100B0D42A /* Frameworks */,
+				CC2EF6572AB487A100B0D42A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC2EF65B2AB487A100B0D42A /* PBXTargetDependency */,
+			);
+			name = ManelMangaTests;
+			productName = ManelMangaTests;
+			productReference = CC2EF6592AB487A100B0D42A /* ManelMangaTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		CC2EF6622AB487A100B0D42A /* ManelMangaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CC2EF6732AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelMangaUITests" */;
+			buildPhases = (
+				CC2EF65F2AB487A100B0D42A /* Sources */,
+				CC2EF6602AB487A100B0D42A /* Frameworks */,
+				CC2EF6612AB487A100B0D42A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CC2EF6652AB487A100B0D42A /* PBXTargetDependency */,
+			);
+			name = ManelMangaUITests;
+			productName = ManelMangaUITests;
+			productReference = CC2EF6632AB487A100B0D42A /* ManelMangaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CC2EF6412AB487A000B0D42A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1430;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					CC2EF6482AB487A000B0D42A = {
+						CreatedOnToolsVersion = 14.3.1;
+					};
+					CC2EF6582AB487A100B0D42A = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = CC2EF6482AB487A000B0D42A;
+					};
+					CC2EF6622AB487A100B0D42A = {
+						CreatedOnToolsVersion = 14.3.1;
+						TestTargetID = CC2EF6482AB487A000B0D42A;
+					};
+				};
+			};
+			buildConfigurationList = CC2EF6442AB487A000B0D42A /* Build configuration list for PBXProject "ManelManga" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CC2EF6402AB487A000B0D42A;
+			productRefGroup = CC2EF64A2AB487A000B0D42A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CC2EF6482AB487A000B0D42A /* ManelManga */,
+				CC2EF6582AB487A100B0D42A /* ManelMangaTests */,
+				CC2EF6622AB487A100B0D42A /* ManelMangaUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CC2EF6472AB487A000B0D42A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC2EF6542AB487A100B0D42A /* Preview Assets.xcassets in Resources */,
+				CC2EF6512AB487A100B0D42A /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF6572AB487A100B0D42A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF6612AB487A100B0D42A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CC2EF6452AB487A000B0D42A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC2EF64F2AB487A000B0D42A /* ContentView.swift in Sources */,
+				CC2EF64D2AB487A000B0D42A /* ManelMangaApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF6552AB487A100B0D42A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC2EF65E2AB487A100B0D42A /* ManelMangaTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CC2EF65F2AB487A100B0D42A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CC2EF6682AB487A100B0D42A /* ManelMangaUITests.swift in Sources */,
+				CC2EF66A2AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CC2EF65B2AB487A100B0D42A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC2EF6482AB487A000B0D42A /* ManelManga */;
+			targetProxy = CC2EF65A2AB487A100B0D42A /* PBXContainerItemProxy */;
+		};
+		CC2EF6652AB487A100B0D42A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CC2EF6482AB487A000B0D42A /* ManelManga */;
+			targetProxy = CC2EF6642AB487A100B0D42A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		CC2EF66B2AB487A100B0D42A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		CC2EF66C2AB487A100B0D42A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		CC2EF66E2AB487A100B0D42A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ManelManga/Preview Content\"";
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelManga;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		CC2EF66F2AB487A100B0D42A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ManelManga/Preview Content\"";
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelManga;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		CC2EF6712AB487A100B0D42A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelMangaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManelManga.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManelManga";
+			};
+			name = Debug;
+		};
+		CC2EF6722AB487A100B0D42A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelMangaTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ManelManga.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ManelManga";
+			};
+			name = Release;
+		};
+		CC2EF6742AB487A100B0D42A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelMangaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ManelManga;
+			};
+			name = Debug;
+		};
+		CC2EF6752AB487A100B0D42A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = G5VVBGL99L;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.manelzaum.ManelMangaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = ManelManga;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CC2EF6442AB487A000B0D42A /* Build configuration list for PBXProject "ManelManga" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC2EF66B2AB487A100B0D42A /* Debug */,
+				CC2EF66C2AB487A100B0D42A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC2EF66D2AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelManga" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC2EF66E2AB487A100B0D42A /* Debug */,
+				CC2EF66F2AB487A100B0D42A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC2EF6702AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelMangaTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC2EF6712AB487A100B0D42A /* Debug */,
+				CC2EF6722AB487A100B0D42A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CC2EF6732AB487A100B0D42A /* Build configuration list for PBXNativeTarget "ManelMangaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CC2EF6742AB487A100B0D42A /* Debug */,
+				CC2EF6752AB487A100B0D42A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CC2EF6412AB487A000B0D42A /* Project object */;
+}
