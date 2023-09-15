@@ -15,6 +15,7 @@
 		CC2EF6682AB487A100B0D42A /* ManelMangaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */; };
 		CC2EF66A2AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */; };
 		CC2EF6782AB4884400B0D42A /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = CC2EF6772AB4884400B0D42A /* SwiftSoup */; };
+		CC2EF67A2AB4D08F00B0D42A /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF6792AB4D08F00B0D42A /* ViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +46,7 @@
 		CC2EF6632AB487A100B0D42A /* ManelMangaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ManelMangaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2EF6672AB487A100B0D42A /* ManelMangaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaUITests.swift; sourceTree = "<group>"; };
 		CC2EF6692AB487A100B0D42A /* ManelMangaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		CC2EF6792AB4D08F00B0D42A /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +102,7 @@
 				CC2EF64E2AB487A000B0D42A /* ContentView.swift */,
 				CC2EF6502AB487A100B0D42A /* Assets.xcassets */,
 				CC2EF6522AB487A100B0D42A /* Preview Content */,
+				CC2EF6792AB4D08F00B0D42A /* ViewModel.swift */,
 			);
 			path = ManelManga;
 			sourceTree = "<group>";
@@ -266,6 +269,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CC2EF64F2AB487A000B0D42A /* ContentView.swift in Sources */,
+				CC2EF67A2AB4D08F00B0D42A /* ViewModel.swift in Sources */,
 				CC2EF64D2AB487A000B0D42A /* ManelMangaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

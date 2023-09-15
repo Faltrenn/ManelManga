@@ -13,65 +13,39 @@ enum Pages {
 }
 
 struct ContentView: View {
-    @State var link: String = ""
-    
-    @State var page: Pages = .Home
-    
-    @State var mangas = [
-        Manga(
-            name: "Pick Me Up!",
-            image: "https://i0.wp.com/imperioscans.com.br/wp-content/uploads/2023/09/Pick_me_up_-_Piccoma.jpg?fit=193%2C273&ssl=1",
-            link: "https://imperioscans.com.br/manga/pick-me-up/",
-            actualVolume: 1
-        ),
-        Manga(
-            name: "The Mad Gate",
-            image: "https://i0.wp.com/imperioscans.com.br/wp-content/uploads/2023/09/TMG_poster_full_res.webp?fit=180%2C278&ssl=1",
-            link: "https://imperioscans.com.br/manga/the-mad-gate/",
-            actualVolume: 1
-        )
-    ]
-    
-    @State var manga: Manga? = nil
+    @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
         ZStack {
-            switch page {
+            switch viewModel.page {
             case .Home:
                 ScrollView {
                     VStack(alignment: .leading) {
-                        ForEach(mangas, id: \.self) { mng in
-                            MangaCard(manga: mng, page: $page, mangaLink: $manga)
+                        ForEach(viewModel.mangas, id: \.self) { mng in
+                            MangaCard(manga: mng)
                         }
                     }
                     .padding()
                 }
             case .Manga:
-                MangaView(manga: $manga, link: $link, page: $page)
+                MangaView()
             case .Volume:
-                VolumeView(link: link, page: $page)
+                VolumeView()
             }
         }
     }
 }
 
-struct Manga: Hashable {
-    let name: String
-    let image: String
-    let link: String
-    let actualVolume: Int
-    
-}
 
 struct MangaCard: View {
     let manga: Manga
-    @Binding var page: Pages
-    @Binding var mangaLink: Manga?
+    @EnvironmentObject var viewModel: ViewModel
+
     
     var body: some View {
         Button(action: {
-            mangaLink = manga
-            page = .Manga
+            viewModel.manga = manga
+            viewModel.page = .Manga
         }, label: {
             HStack {
                 AsyncImage(url: URL(string: manga.image)) { image in
@@ -103,15 +77,15 @@ struct MangaCard: View {
 }
 
 struct MangaView: View {
-    @Binding var manga: Manga?
-    @Binding var link: String
-    @Binding var page: Pages
+    @EnvironmentObject var viewModel: ViewModel
+    
     @State var volumes: [String] = []
+    
     var body: some View {
         ZStack(alignment: .top) {
             HStack {
                 Button(action: {
-                    page = .Home
+                    viewModel.page = .Home
                 }, label: {
                   Text("Voltar")
                         .font(.title2)
@@ -122,7 +96,7 @@ struct MangaView: View {
             .zIndex(1)
             ScrollView {
                 VStack {
-                    if let manga = manga {
+                    if let manga = viewModel.manga {
                         AsyncImage(url: URL(string: manga.image)) { image in
                             image
                                 .resizable()
@@ -138,8 +112,8 @@ struct MangaView: View {
                     }
                     ForEach(volumes, id: \.self) { volume in
                         Button {
-                            link = volume
-                            page = .Volume
+                            viewModel.link = volume
+                            viewModel.page = .Volume
                         } label: {
                             Text("Volume: \(volumes.count - volumes.firstIndex(of: volume)!)")
                                 .font(.title3)
@@ -148,7 +122,7 @@ struct MangaView: View {
                     }
                 }
                 .onAppear {
-                    if let manga = manga {
+                    if let manga = viewModel.manga {
                         guard let url = URL(string: manga.link) else {
                             return
                         }
@@ -175,8 +149,7 @@ struct MangaView: View {
 }
 
 struct VolumeView: View {
-    let link: String
-    @Binding var page: Pages
+    @EnvironmentObject var viewModel: ViewModel
     
     @State var images: [String] = []
     
@@ -206,7 +179,7 @@ struct VolumeView: View {
         ZStack(alignment: .top) {
             HStack {
                 Button(action: {
-                    page = .Manga
+                    viewModel.page = .Manga
                 }, label: {
                   Text("Voltar")
                         .font(.title2)
@@ -231,7 +204,7 @@ struct VolumeView: View {
                 }
             }
             .onAppear {
-                guard let url = URL(string: link) else {
+                guard let url = URL(string: viewModel.link) else {
                     return
                 }
                 getVolume(url: url)
@@ -245,5 +218,6 @@ struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
             .preferredColorScheme(.dark)
+            .environmentObject(ViewModel())
     }
 }
