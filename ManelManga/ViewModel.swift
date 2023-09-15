@@ -8,7 +8,7 @@
 import Foundation
 
 
-struct Manga: Hashable {
+struct Manga: Hashable, Codable {
     let name: String
     let image: String
     let link: String

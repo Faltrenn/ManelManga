@@ -15,17 +15,44 @@ enum Pages {
 struct ContentView: View {
     @EnvironmentObject var viewModel: ViewModel
     
+    @State var isPresented = false
+    
     var body: some View {
         ZStack {
             switch viewModel.page {
             case .Home:
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(viewModel.mangas, id: \.self) { mng in
-                            MangaCard(manga: mng)
-                        }
+                ZStack(alignment: .topTrailing) {
+                    Button {
+                        isPresented.toggle()
+                    } label: {
+                        Image(systemName: "plus.circle.fill")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 50)
                     }
-                    .padding()
+                    .padding(.trailing)
+                    .zIndex(1)
+
+                    ScrollView {
+                        VStack(alignment: .leading) {
+                            ForEach(viewModel.mangas, id: \.self) { mng in
+                                MangaCard(manga: mng)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 60)
+                    }
+                }
+                .alert("Adicionar anime", isPresented: $isPresented) {
+                    AddManga()
+                }
+                .onAppear {
+                    guard let data = UserDefaults.standard.data(forKey: "mangas") else {
+                        return
+                    }
+                    do {
+                        viewModel.mangas = try JSONDecoder().decode([Manga].self, from: data)
+                    } catch { }
                 }
             case .Manga:
                 MangaView()
@@ -36,11 +63,43 @@ struct ContentView: View {
     }
 }
 
+struct AddManga: View {
+    @EnvironmentObject var viewModel: ViewModel
+    @State var linkManga = ""
+    
+    var body: some View {
+        TextField("Link do mangá", text: $linkManga)
+            .foregroundColor(.black)
+        Button("Adicionar") {
+            guard let url = URL(string: linkManga) else {
+                return
+            }
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                    do {
+                        let doc = try SwiftSoup.parse(html)
+                        
+                        let name = try doc.select("div[class=post-title] h1").text()
+                        
+                        let image = try doc.select("div[class=summary_image] a img").attr("src")
+                        
+                        viewModel.mangas.append(Manga(name: name, image: image, link: linkManga, actualVolume: 1))
+                        UserDefaults.standard.setValue(try JSONEncoder().encode(viewModel.mangas), forKey: "mangas")
+                    } catch {
+                        print(error)
+                    }
+                }
+            }.resume()
+            
+        }
+        Button("Cancelar", role: .cancel) { }
+    }
+}
+
 
 struct MangaCard: View {
     let manga: Manga
     @EnvironmentObject var viewModel: ViewModel
-
     
     var body: some View {
         Button(action: {
