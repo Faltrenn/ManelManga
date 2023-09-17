@@ -9,26 +9,14 @@ import SwiftUI
 import SwiftSoup
 
 struct MangaView: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    
+    let manga: Manga
     @State var volumes: [String] = []
     
     var body: some View {
-        ZStack(alignment: .top) {
-            HStack {
-                Button(action: {
-                    mainViewModel.page = .Home
-                }, label: {
-                  Text("Voltar")
-                        .font(.title2)
-                })
-                Spacer()
-            }
-            .padding()
-            .zIndex(1)
-            ScrollView {
-                VStack {
-                    if let manga = mainViewModel.manga {
+        NavigationStack {
+            ZStack(alignment: .top) {
+                ScrollView {
+                    VStack {
                         AsyncImage(url: URL(string: manga.image)) { image in
                             image
                                 .resizable()
@@ -43,9 +31,8 @@ struct MangaView: View {
                         }
                     }
                     ForEach(volumes, id: \.self) { volume in
-                        Button {
-                            mainViewModel.link = volume
-                            mainViewModel.page = .Volume
+                        NavigationLink {
+                            VolumeView(link: volume)
                         } label: {
                             Text("Volume: \(volumes.count - volumes.firstIndex(of: volume)!)")
                                 .font(.title3)
@@ -54,35 +41,38 @@ struct MangaView: View {
                     }
                 }
                 .onAppear {
-                    if let manga = mainViewModel.manga {
-                        guard let url = URL(string: manga.link) else {
-                            return
-                        }
-                        URLSession.shared.dataTask(with: url) { data, _, error in
-                            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-                                do {
-                                    let doc = try SwiftSoup.parse(html)
-                                    let elements = try doc.select("li[class=wp-manga-chapter] a").array()
-                                    var vs: [String] = []
-                                    for volume in elements {
-                                        vs.append(try volume.attr("href"))
-                                    }
-                                    volumes = vs
-                                } catch {
-                                    print(error)
-                                }
-                            }
-                        }.resume()
-                    }
+                    getVolumes(link: manga.link)
                 }
             }
         }
+    }
+    
+    func getVolumes(link: String) {
+        guard let url = URL(string: link) else {
+            return
+        }
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                do {
+                    let doc = try SwiftSoup.parse(html)
+                    let elements = try doc.select("li[class=wp-manga-chapter] a").array()
+                    var vs: [String] = []
+                    for volume in elements {
+                        vs.append(try volume.attr("href"))
+                    }
+                    DispatchQueue.main.async {
+                        volumes = vs
+                    }
+                } catch {
+                    print(error)
+                }
+            }
+        }.resume()
     }
 }
 
 struct MangaView_Previews: PreviewProvider {
     static var previews: some View {
-        MangaView()
-            .environmentObject(MainViewModel())
+        MangaView(manga: Manga(name: "Name", image: "Image", link: "Link", actualVolume: 1))
     }
 }

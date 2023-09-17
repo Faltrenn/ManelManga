@@ -8,24 +8,9 @@
 import SwiftUI
 import SwiftSoup
 
-enum Pages {
-    case Home, Manga, Volume
-}
-
 struct ContentView: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    
     var body: some View {
-        ZStack {
-            switch mainViewModel.page {
-            case .Home:
-                HomeView()
-            case .Manga:
-                MangaView()
-            case .Volume:
-                VolumeView()
-            }
-        }
+        HomeView()
     }
 }
 
@@ -33,6 +18,5 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
-            .environmentObject(MainViewModel())
     }
 }
