@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct ManelMangaApp: App {
-    @ObservedObject var viewModel = ViewModel()
+    @ObservedObject var viewModel = MainViewModel()
     var body: some Scene {
         WindowGroup {
             ContentView()
