@@ -31,7 +31,7 @@ struct HomeView: View {
                             NavigationLink {
                                 MangaView(manga: manga)
                             } label: {
-                                MangaCard(manga: manga)
+                                MangaCard(manga: manga, mangas: $mangas)
                             }
                         }
                     }
@@ -93,6 +93,8 @@ struct AddManga: View {
 
 struct MangaCard: View {
     let manga: Manga
+    @Binding var mangas: [Manga]
+
     
     var body: some View {
         HStack {
@@ -115,6 +117,26 @@ struct MangaCard: View {
                     .frame(maxWidth: .infinity)
                 Text("Volume atual: \(manga.actualVolume)")
                 Spacer()
+                HStack {
+                    Spacer()
+                    Button {
+                        mangas.removeAll { mng in
+                            mng == manga
+                        }
+                        do {
+                            UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
+                        } catch { }
+                    } label: {
+                        Circle()
+                            .fill(.red)
+                            .frame(width: 40)
+                            .overlay {
+                                Text("X")
+                            }
+                    }
+                }
+                .padding()
+                
             }
             .font(.title3)
         }
