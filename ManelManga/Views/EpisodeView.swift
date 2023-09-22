@@ -7,10 +7,11 @@
 
 import SwiftUI
 import AVKit
+import VideoPlayer
 
 struct EpisodeView: View {
-    let link: String
-    @State var episode: [Source] = []
+    let episode: Episode
+    @State var source: [Source] = []
     @State var choice: Source? = nil
     @State var player = AVPlayer()
     @State var play = false
@@ -33,10 +34,14 @@ struct EpisodeView: View {
         .onAppear {
             getEpisode()
         }
+        .onDisappear {
+            play = false
+            player.pause()
+        }
     }
     
     func getEpisode() {
-        guard let url = URL(string: link) else {
+        guard let url = URL(string: episode.videoLink) else {
             return
         }
         
@@ -45,8 +50,8 @@ struct EpisodeView: View {
                 do {
                     let sources = html.split(separator: "sources: ")[1].split(separator: "]")[0] + "]"
                     
-                    episode = try JSONDecoder().decode([Source].self, from: Data(sources.description.utf8))
-                    choice = episode[0]
+                    source = try JSONDecoder().decode([Source].self, from: Data(sources.description.utf8))
+                    choice = source[0]
                     if let url = URL(string: choice!.file) {
                         player.replaceCurrentItem(with: AVPlayerItem(url: url))
                     }
@@ -59,6 +64,6 @@ struct EpisodeView: View {
 struct EpisodeView_Previews: PreviewProvider {
     static var previews: some View {
 //        ContentView()
-        EpisodeView(link: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado")
+        EpisodeView(episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", visualized: false))
     }
 }

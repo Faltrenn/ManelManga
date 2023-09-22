@@ -9,7 +9,9 @@ import SwiftUI
 import SwiftSoup
 import AVKit
 
+
 struct AnimeHomeView: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
     @State var animeLink = ""
     @State var link = ""
     @State var play = false
@@ -36,11 +38,11 @@ struct AnimeHomeView: View {
                 .padding(.horizontal)
                 ScrollView {
                     VStack {
-                        ForEach(animes, id: \.self) { anime in
+                        ForEach(mainViewModel.animes, id: \.self) { anime in
                             NavigationLink {
                                 AnimeView(anime: anime)
                             } label: {
-                                AnimeCard(anime: anime, animes: $animes)
+                                AnimeCard(anime: anime)
                             }
                         }
                     }
@@ -50,7 +52,7 @@ struct AnimeHomeView: View {
             }
         }
         .alert("Adicionar anime", isPresented: $isPresented) {
-            AddAnime(animes: $animes)
+            AddAnime()
         }
         .onAppear {
             guard let data = UserDefaults.standard.data(forKey: "animes") else {
@@ -64,45 +66,23 @@ struct AnimeHomeView: View {
 }
 
 struct AddAnime: View {
-    @State var linkAnime = ""
-    @Binding var animes: [Anime]
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @State var animelink = ""
     
     var body: some View {
-        TextField("Link do anime", text: $linkAnime)
+        TextField("Link do anime", text: $animelink)
+            .textCase(.none)
+            .autocorrectionDisabled()
         Button("Adicionar") {
-            addManga()
+            mainViewModel.addAnime(animelink: animelink)
         }
         Button("Cancelar", role: .cancel) { }
-    }
-    
-    func addManga() {
-        guard let url = URL(string: linkAnime) else {
-            return
-        }
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-                do {
-                    let doc = try SwiftSoup.parse(html)
-                    
-                    let name = try doc.select("h2[class=film-name dynamic-name]").text()
-                    
-                    let image = try doc.select("div[class=anisc-poster] div img").attr("src")
-                    
-                    print(image)
-                    
-                    animes.append(Anime(name: name, image: image, link: linkAnime, lastEpisode: 1, episodes: []))
-                    UserDefaults.standard.setValue(try JSONEncoder().encode(self.animes), forKey: "animes")
-                } catch {
-                    print(error)
-                }
-            }
-        }.resume()
     }
 }
 
 struct AnimeCard: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
     let anime: Anime
-    @Binding var animes: [Anime]
     
     var body: some View {
         HStack {
@@ -124,17 +104,14 @@ struct AnimeCard: View {
                     .lineLimit(3)
                     .bold()
                     .frame(maxWidth: .infinity)
-                Text("Episódio atual: \(anime.lastEpisode)")
                 Spacer()
                 HStack {
                     Spacer()
                     Button {
-                        animes.removeAll { anm in
+                        mainViewModel.animes.removeAll { anm in
                             anm == anime
                         }
-                        do {
-                            UserDefaults.standard.setValue(try JSONEncoder().encode(self.animes), forKey: "animes")
-                        } catch { }
+                        mainViewModel.saveAnimes()
                     } label: {
                         Circle()
                             .fill(.red)
@@ -156,6 +133,6 @@ struct AnimeCard: View {
 
 struct AnimeHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        AnimeHomeView()
+        ContentView()
     }
 }

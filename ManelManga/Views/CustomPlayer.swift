@@ -22,6 +22,13 @@ struct CustomPlayer: UIViewControllerRepresentable {
         player.preventsDisplaySleepDuringVideoPlayback = true
         player.allowsExternalPlayback = true
         
+        player.currentItem?.observe(\.status, changeHandler: { AVPlayerItem, a in
+            print("Opa")
+        })
+        player.currentItem?.observe(\.status, changeHandler: { AVPlayerItem, value in
+            print(value)
+        })
+        
         controller.player = player
         
         return controller

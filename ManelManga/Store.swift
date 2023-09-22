@@ -8,31 +8,29 @@
 import Foundation
 
 struct Manga: Hashable, Codable {
-    let name: String
-    let image: String
-    let link: String
-    let actualVolume: Int
+    var name: String
+    var image: String
+    var link: String
 }
 
 struct Anime: Codable, Hashable {
-    let name: String
+    var name: String
     var image: String
-    let link: String
-    var lastEpisode: Int
+    var link: String
     var episodes: [Episode]
 }
 
 struct Episode: Codable, Hashable {
-    let name: String
-    let thumb: String
-    let videoLink: String
+    var name: String
+    var thumb: String
+    var videoLink: String
     var visualized: Bool
 }
 
 struct Source: Codable, Hashable {
-    let file: String
-    let type: String
-    let label: String
+    var file: String
+    var type: String
+    var label: String
 }
 
 enum Pages: CaseIterable {

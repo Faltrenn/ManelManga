@@ -80,7 +80,7 @@ struct AddManga: View {
                     
                     let image = try doc.select("div[class=summary_image] a img").attr("src")
                     
-                    mangas.append(Manga(name: name, image: image, link: linkManga, actualVolume: 1))
+                    mangas.append(Manga(name: name, image: image, link: linkManga))
                     UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
                 } catch {
                     print(error)
@@ -113,7 +113,6 @@ struct MangaCard: View {
                     .font(.title)
                     .bold()
                     .frame(maxWidth: .infinity)
-                Text("Volume atual: \(manga.actualVolume)")
                 Spacer()
                 HStack {
                     Spacer()

@@ -73,6 +73,6 @@ struct MangaView: View {
 
 struct MangaView_Previews: PreviewProvider {
     static var previews: some View {
-        MangaView(manga: Manga(name: "Name", image: "Image", link: "Link", actualVolume: 1))
+        MangaView(manga: Manga(name: "Name", image: "Image", link: "Link"))
     }
 }
