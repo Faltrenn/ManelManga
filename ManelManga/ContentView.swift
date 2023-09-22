@@ -7,10 +7,45 @@
 
 import SwiftUI
 import SwiftSoup
+import AVKit
+
 
 struct ContentView: View {
+    @State var page: Pages = .Anime
     var body: some View {
-        HomeView()
+        VStack {
+            switch page {
+            case .Anime:
+                AnimeHomeView()
+            case .Manga:
+                MangaHomeView()
+            }
+            VStack {
+                TabBar(page: $page)
+            }
+        }
+    }
+}
+
+struct TabBar: View {
+    @Binding var page: Pages
+    
+    var body: some View {
+        HStack {
+            Spacer()
+            ForEach(Pages.allCases, id: \.self) { p in
+                VStack {
+                    Image(systemName: page == p ? p.selIcon : p.unsIcon)
+                        .font(.title)
+                    Text(p.title)
+                }
+                .foregroundColor(page == p ? .blue : .gray)
+                .onTapGesture {
+                    page = p
+                }
+                Spacer()
+            }
+        }
     }
 }
 

@@ -1,17 +1,26 @@
 //
-//  HomeView.swift
+//  AnimeHomeView.swift
 //  ManelManga
 //
-//  Created by Emanuel on 17/09/23.
+//  Created by Emanuel on 22/09/23.
 //
 
 import SwiftUI
 import SwiftSoup
+import AVKit
 
-struct HomeView: View {
+struct AnimeHomeView: View {
+    @State var animeLink = ""
+    @State var link = ""
+    @State var play = false
+    @State var sources: [Source] = []
+    @State var player = AVPlayer()
+    @State var videoLink = ""
+    
+    @State var animes: [Anime] = []
+    
     @State var isPresented = false
-    @State var mangas: [Manga] = []
-
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topTrailing) {
@@ -26,42 +35,40 @@ struct HomeView: View {
                 .zIndex(1)
                 .padding(.horizontal)
                 ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(mangas, id: \.self) { manga in
+                    VStack {
+                        ForEach(animes, id: \.self) { anime in
                             NavigationLink {
-                                MangaView(manga: manga)
+                                AnimeView(anime: anime)
                             } label: {
-                                MangaCard(manga: manga, mangas: $mangas)
+                                AnimeCard(anime: anime, animes: $animes)
                             }
                         }
                     }
-                    .padding(.horizontal)
                     .padding(.top, 60)
+                    .padding(.horizontal)
                 }
             }
         }
         .alert("Adicionar anime", isPresented: $isPresented) {
-            AddManga(mangas: $mangas)
+            AddAnime(animes: $animes)
         }
         .onAppear {
-            guard let data = UserDefaults.standard.data(forKey: "mangas") else {
+            guard let data = UserDefaults.standard.data(forKey: "animes") else {
                 return
             }
             do {
-                mangas = try JSONDecoder().decode([Manga].self, from: data)
+                animes = try JSONDecoder().decode([Anime].self, from: data)
             } catch { }
         }
     }
 }
 
-
-struct AddManga: View {
-    @State var linkManga = ""
-    @Binding var mangas: [Manga]
+struct AddAnime: View {
+    @State var linkAnime = ""
+    @Binding var animes: [Anime]
     
     var body: some View {
-        TextField("Link do mangá", text: $linkManga)
-            .foregroundColor(.black)
+        TextField("Link do anime", text: $linkAnime)
         Button("Adicionar") {
             addManga()
         }
@@ -69,7 +76,7 @@ struct AddManga: View {
     }
     
     func addManga() {
-        guard let url = URL(string: linkManga) else {
+        guard let url = URL(string: linkAnime) else {
             return
         }
         URLSession.shared.dataTask(with: url) { data, _, error in
@@ -77,12 +84,14 @@ struct AddManga: View {
                 do {
                     let doc = try SwiftSoup.parse(html)
                     
-                    let name = try doc.select("div[class=post-title] h1").text()
+                    let name = try doc.select("h2[class=film-name dynamic-name]").text()
                     
-                    let image = try doc.select("div[class=summary_image] a img").attr("src")
+                    let image = try doc.select("div[class=anisc-poster] div img").attr("src")
                     
-                    mangas.append(Manga(name: name, image: image, link: linkManga, actualVolume: 1))
-                    UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
+                    print(image)
+                    
+                    animes.append(Anime(name: name, image: image, link: linkAnime, lastEpisode: 1, episodes: []))
+                    UserDefaults.standard.setValue(try JSONEncoder().encode(self.animes), forKey: "animes")
                 } catch {
                     print(error)
                 }
@@ -91,14 +100,13 @@ struct AddManga: View {
     }
 }
 
-struct MangaCard: View {
-    let manga: Manga
-    @Binding var mangas: [Manga]
-
+struct AnimeCard: View {
+    let anime: Anime
+    @Binding var animes: [Anime]
     
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: manga.image)) { image in
+            AsyncImage(url: URL(string: anime.image)) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fit)
@@ -111,20 +119,21 @@ struct MangaCard: View {
                     }
             }
             VStack(alignment: .leading) {
-                Text(manga.name)
-                    .font(.title)
+                Text(anime.name)
+                    .font(.title2)
+                    .lineLimit(3)
                     .bold()
                     .frame(maxWidth: .infinity)
-                Text("Volume atual: \(manga.actualVolume)")
+                Text("Episódio atual: \(anime.lastEpisode)")
                 Spacer()
                 HStack {
                     Spacer()
                     Button {
-                        mangas.removeAll { mng in
-                            mng == manga
+                        animes.removeAll { anm in
+                            anm == anime
                         }
                         do {
-                            UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
+                            UserDefaults.standard.setValue(try JSONEncoder().encode(self.animes), forKey: "animes")
                         } catch { }
                     } label: {
                         Circle()
@@ -145,8 +154,8 @@ struct MangaCard: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
+struct AnimeHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView()
+        AnimeHomeView()
     }
 }

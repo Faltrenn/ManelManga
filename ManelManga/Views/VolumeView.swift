@@ -11,7 +11,7 @@ import SwiftSoup
 struct VolumeView: View {
     let link: String
     @State var images: [String] = []
-        
+    
     var body: some View {
         ZStack(alignment: .top) {
             VStack {
