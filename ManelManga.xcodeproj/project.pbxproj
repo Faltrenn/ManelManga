@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		CC00AA462ABE06C300BA7599 /* AnimeHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00AA452ABE06C300BA7599 /* AnimeHomeView.swift */; };
+		CC00AA482ABE319400BA7599 /* MainViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC00AA472ABE319400BA7599 /* MainViewModel.swift */; };
 		CC10A6BD2ABCA60900B91AEF /* CustomPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC10A6BC2ABCA60900B91AEF /* CustomPlayer.swift */; };
 		CC19C5982ABB76C7002F7E91 /* AnimeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC19C5972ABB76C7002F7E91 /* AnimeView.swift */; };
 		CC2EF64D2AB487A000B0D42A /* ManelMangaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */; };
@@ -45,6 +46,7 @@
 
 /* Begin PBXFileReference section */
 		CC00AA452ABE06C300BA7599 /* AnimeHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeHomeView.swift; sourceTree = "<group>"; };
+		CC00AA472ABE319400BA7599 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		CC10A6BC2ABCA60900B91AEF /* CustomPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlayer.swift; sourceTree = "<group>"; };
 		CC19C5972ABB76C7002F7E91 /* AnimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeView.swift; sourceTree = "<group>"; };
 		CC2EF6492AB487A000B0D42A /* ManelManga.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManelManga.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -120,6 +122,7 @@
 				CC2EF6502AB487A100B0D42A /* Assets.xcassets */,
 				CC2EF6522AB487A100B0D42A /* Preview Content */,
 				CCCB4DDE2AB7985A00121249 /* Store.swift */,
+				CC00AA472ABE319400BA7599 /* MainViewModel.swift */,
 			);
 			path = ManelManga;
 			sourceTree = "<group>";
@@ -311,6 +314,7 @@
 				CC2EF64D2AB487A000B0D42A /* ManelMangaApp.swift in Sources */,
 				CC00AA462ABE06C300BA7599 /* AnimeHomeView.swift in Sources */,
 				CC10A6BD2ABCA60900B91AEF /* CustomPlayer.swift in Sources */,
+				CC00AA482ABE319400BA7599 /* MainViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

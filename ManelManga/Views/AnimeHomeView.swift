@@ -75,6 +75,7 @@ struct AddAnime: View {
             .autocorrectionDisabled()
         Button("Adicionar") {
             mainViewModel.addAnime(animelink: animelink)
+            animelink = ""
         }
         Button("Cancelar", role: .cancel) { }
     }
