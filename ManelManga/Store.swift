@@ -24,6 +24,7 @@ struct Episode: Codable, Hashable {
     var name: String
     var thumb: String
     var videoLink: String
+    var downloadedVideoPath: String?
     var visualized: Bool
 }
 

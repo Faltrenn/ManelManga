@@ -64,6 +64,6 @@ struct EpisodeView: View {
 struct EpisodeView_Previews: PreviewProvider {
     static var previews: some View {
 //        ContentView()
-        EpisodeView(episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", visualized: false))
+        EpisodeView(episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", downloadedVideoPath: nil, visualized: false))
     }
 }

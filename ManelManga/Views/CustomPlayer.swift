@@ -137,7 +137,7 @@ struct CustomPlayerControls: View {
 }
 
 struct Preview: View {
-    @State var player = AVPlayer(url: URL(string: "https://cdn-1.tanoshi.digital/stream/B/Bleach__Sennen_Kessen-hen_-_Ketsubetsu-tan/480p/AnV-03.mp4?md5=NZBsPvtl-D8cmFTIhBNvlg&expires=1695327055")!)
+    @State var player = AVPlayer(url: URL(string: "https://cdn-2.tanoshi.digital/stream/T/Tomo-chan_wa_Onnanoko_Dublado/480p/AnV-01.mp4?md5=P8k_A0bgNKYihZINWueUyQ&expires=1695436648")!)
     @State var play = false
     @State var time: Double = 0
     @State var fullscreen = false

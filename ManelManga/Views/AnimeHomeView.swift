@@ -67,10 +67,11 @@ struct AnimeHomeView: View {
 
 struct AddAnime: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    @State var animelink = ""
+    @State var animelink = "https://animes.vision/animes/mieruko-chan-dublado"
     
     var body: some View {
         TextField("Link do anime", text: $animelink)
+            .textInputAutocapitalization(.never)
             .textCase(.none)
             .autocorrectionDisabled()
         Button("Adicionar") {

@@ -52,6 +52,43 @@ struct TabBar: View {
     }
 }
 
+struct DownloadTest: View {
+    //let link = "https://cdn-2.tanoshi.digital/stream/T/Tomo-chan_wa_Onnanoko_Dublado/480p/AnV-01.mp4?md5=P8k_A0bgNKYihZINWueUyQ&expires=1695436648"
+    let link = "https://cdn-1.tanoshi.digital/stream/B/Bastard_Ankoku_no_Hakaishin_Season_2_ONA_Dublado/480p/AnV-02.mp4?md5=DMLAtR94cr0--q9FiNHVBA&expires=1695440788"
+    @State var downloadedURL:URL?
+    
+    var body: some View {
+        VStack {
+            Button("Download") {
+                print("foi")
+                URLSession.shared.downloadTask(with: URL(string: link)!) { url, response, error in
+                    print("Terminou")
+                    guard let fileURL = url else { return }
+                    do {
+                        let documentsURL = try FileManager.default.url(for: .documentDirectory,
+                                                                       in: .userDomainMask,
+                                                                       appropriateFor: nil,
+                                                                       create: false)
+                        let savedURL = documentsURL.appendingPathComponent("Video2.mp4")
+                        try FileManager.default.moveItem(at: fileURL, to: savedURL)
+                        downloadedURL = savedURL
+                    } catch {
+                        print("erro: ", error)
+                    }
+                }.resume()
+            }
+            .font(.title)
+            if let downloadedURL = downloadedURL {
+                VStack {
+                    Text(downloadedURL.absoluteString)
+                    VideoPlayer(player: AVPlayer(asset: AVURLAsset(url: downloadedURL)))
+                }
+            }
+
+        }
+    }
+}
+
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
