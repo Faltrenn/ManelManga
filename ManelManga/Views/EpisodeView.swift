@@ -10,6 +10,7 @@ import AVKit
 import VideoPlayer
 
 struct EpisodeView: View {
+    let anime: Anime
     let episode: Episode
     @State var source: [Source] = []
     @State var choice: Source? = nil
@@ -41,29 +42,39 @@ struct EpisodeView: View {
     }
     
     func getEpisode() {
-        guard let url = URL(string: episode.videoLink) else {
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil, let html = String(data: data, encoding: .ascii) {
-                do {
-                    let sources = html.split(separator: "sources: ")[1].split(separator: "]")[0] + "]"
-                    
-                    source = try JSONDecoder().decode([Source].self, from: Data(sources.description.utf8))
-                    choice = source[0]
-                    if let url = URL(string: choice!.file) {
-                        player.replaceCurrentItem(with: AVPlayerItem(url: url))
-                    }
-                } catch { }
+        if episode.downloads.downloaded {
+            let url = episode.downloads.FHD ?? episode.downloads.HD ?? episode.downloads.SD ??  ""
+            let documentsURL = FileManager.default.urls(for: .documentDirectory,
+                                                           in: .userDomainMask)[0]
+                .appendingPathComponent(anime.name).appendingPathComponent(url)
+            let asset = AVURLAsset(url: documentsURL)
+            
+            player.replaceCurrentItem(with: AVPlayerItem(asset: asset))
+        } else {
+            guard let url = URL(string: episode.videoLink) else {
+                return
             }
-        }.resume()
+            
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                if let data = data, error == nil, let html = String(data: data, encoding: .ascii) {
+                    do {
+                        let sources = html.split(separator: "sources: ")[1].split(separator: "]")[0] + "]"
+                        
+                        source = try JSONDecoder().decode([Source].self, from: Data(sources.description.utf8))
+                        choice = source[0]
+                        if let url = URL(string: choice!.file) {
+                            player.replaceCurrentItem(with: AVPlayerItem(url: url))
+                        }
+                    } catch { }
+                }
+            }.resume()
+        }
     }
 }
 
 struct EpisodeView_Previews: PreviewProvider {
     static var previews: some View {
 //        ContentView()
-        EpisodeView(episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", downloadedVideoPath: nil, visualized: false))
+        EpisodeView(anime: Anime(name: "", image: "", link: "", episodes: []), episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", downloads: DownloadedVideo()))
     }
 }

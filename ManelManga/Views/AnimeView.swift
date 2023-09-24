@@ -39,9 +39,9 @@ struct AnimeView: View {
                         .bold()
                     ForEach(Array(anime.episodes.enumerated()), id: \.offset) { c, episode in
                         NavigationLink {
-                            EpisodeView(episode: episode)
+                            EpisodeView(anime: anime, episode: episode)
                         } label: {
-                            EpisodeCard(episode: episode)
+                            EpisodeCard(anime: $anime, episode: episode)
                         }
                     }
                 }
@@ -52,7 +52,11 @@ struct AnimeView: View {
 }
 
 struct EpisodeCard: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @Binding var anime: Anime
     let episode: Episode
+    @State var sources: [Source]?
+    
     var body: some View {
         HStack(spacing: 15) {
             AsyncImage(url: URL(string: episode.thumb)) { image in
@@ -76,41 +80,46 @@ struct EpisodeCard: View {
                     .multilineTextAlignment(.leading)
                 HStack(spacing: 25) {
                     Spacer()
-                    if episode.downloadedVideoPath == nil {
-                        Button {
-                            
-                        } label: {
+                    
+                    if let sources = sources {
+                        Button { } label: {
                             Menu {
-                                Button("1080p") { }
-                                Button("720p") { }
-                                Button("480p") { }
-                            } label: {
-                                Image(systemName: "arrow.down.to.line")
-                                    .bold()
-                            }
-                        }
-                    } else {
-                        Button {
-                            
-                        } label: {
-                            Menu {
-                                Button("Apagar download") { }
+                                ForEach(sources, id: \.self) { source in
+                                    Button {
+                                        mainViewModel.downloadEpisode(anime: anime,
+                                                                      episode: episode,
+                                                                      source: source) { anime in
+                                            self.anime = anime
+                                        }
+                                    } label: {
+                                        Label("Baixar \(source.label)", systemImage: "arrow.down.to.line")
+                                    }
+                                }
                             } label: {
                                 Image(systemName: "arrow.down.to.line")
                                     .bold()
                                     .overlay {
-                                        Image(systemName: "checkmark.circle.fill")
-                                            .font(.system(size: 12))
-                                            .offset(CGSize(width: 10, height: -10))
+                                        if episode.downloads.downloaded {
+                                            Image(systemName: "checkmark.circle.fill")
+                                                .font(.system(size: 12))
+                                                .offset(CGSize(width: 10, height: -10))
+                                        }
                                     }
                             }
                         }
-
                     }
                     Image(systemName: "ellipsis")
                         .bold()
+                        .onTapGesture {
+                            anime.episodes[0].downloads.HD = ""
+                        }
                 }
                 .font(.title2)
+            }
+        }
+        .onAppear {
+            mainViewModel.getSources(episodeLink: episode.videoLink) { sources in
+                self.sources = sources
             }
         }
     }
@@ -126,13 +135,11 @@ struct AnimeView_Previews: PreviewProvider {
                                 Episode(name: "Name",
                                         thumb: "https://animes.vision/storage/screenshot/I9hvBcj20yfzZS4P0FYHdpB6D9fBoKoiTUEPAW9I.jpg",
                                         videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-05/legendado",
-                                        downloadedVideoPath: "",
-                                        visualized: false),
+                                        downloads: DownloadedVideo()),
                                 Episode(name: "Name2",
                                         thumb: "https://animes.vision/storage/screenshot/2t7fJaUHcfHnOIThKZ21ICKa4E7kO98zqh5hPYyW.jpg",
                                         videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-09/legendado",
-                                        downloadedVideoPath: nil,
-                                        visualized: false)
+                                        downloads: DownloadedVideo(SD: nil, HD: "", FHD: ""))
                                ]))
             .environmentObject(MainViewModel())
     }

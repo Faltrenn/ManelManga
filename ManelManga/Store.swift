@@ -24,8 +24,15 @@ struct Episode: Codable, Hashable {
     var name: String
     var thumb: String
     var videoLink: String
-    var downloadedVideoPath: String?
-    var visualized: Bool
+    var downloads: DownloadedVideo = DownloadedVideo()
+    var visualized: Bool = false
+}
+
+struct DownloadedVideo: Codable, Hashable {
+    var SD: String? = nil
+    var HD: String? = nil
+    var FHD: String? = nil
+    var downloaded: Bool { return (SD != nil || HD != nil || FHD != nil) }
 }
 
 struct Source: Codable, Hashable {

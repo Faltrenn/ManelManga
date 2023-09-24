@@ -49,6 +49,7 @@
 		CC00AA472ABE319400BA7599 /* MainViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewModel.swift; sourceTree = "<group>"; };
 		CC10A6BC2ABCA60900B91AEF /* CustomPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPlayer.swift; sourceTree = "<group>"; };
 		CC19C5972ABB76C7002F7E91 /* AnimeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimeView.swift; sourceTree = "<group>"; };
+		CC1DB4542ABF933500F962CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		CC2EF6492AB487A000B0D42A /* ManelManga.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManelManga.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManelMangaApp.swift; sourceTree = "<group>"; };
 		CC2EF64E2AB487A000B0D42A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -116,6 +117,7 @@
 		CC2EF64B2AB487A000B0D42A /* ManelManga */ = {
 			isa = PBXGroup;
 			children = (
+				CC1DB4542ABF933500F962CF /* Info.plist */,
 				CCCB4DD92AB785F000121249 /* Views */,
 				CC2EF64C2AB487A000B0D42A /* ManelMangaApp.swift */,
 				CC2EF64E2AB487A000B0D42A /* ContentView.swift */,
@@ -476,6 +478,8 @@
 				DEVELOPMENT_TEAM = G5VVBGL99L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ManelManga/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -505,6 +509,8 @@
 				DEVELOPMENT_TEAM = G5VVBGL99L;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ManelManga/Info.plist;
+				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
