@@ -125,7 +125,9 @@ class MainViewModel: ObservableObject {
                 let documentsURL = FileManager.default.urls(for: .documentDirectory,
                                                                in: .userDomainMask)[0]
                     .appendingPathComponent(anime.name, isDirectory: true)
-                try FileManager.default.createDirectory(atPath: documentsURL.path(), withIntermediateDirectories: true, attributes: nil)
+
+                print("anime: ", anime.name)
+                try FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true, attributes: nil)
                 let savedURL = documentsURL.appendingPathComponent("\(episode.name) \(source.label).\(source.type.split(separator: "/")[1])")
                 try FileManager.default.moveItem(at: fileURL, to: savedURL)
                 if let animeId = self.animes.firstIndex(of: anime) {
@@ -146,7 +148,9 @@ class MainViewModel: ObservableObject {
                         }
                     }
                 }
-            } catch { }
+            } catch {
+                print(error)
+            }
         }.resume()
     }
     
