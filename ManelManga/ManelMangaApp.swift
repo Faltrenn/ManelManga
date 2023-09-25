@@ -12,6 +12,7 @@ struct ManelMangaApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+//            Test()
         }
     }
 }

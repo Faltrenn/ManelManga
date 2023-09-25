@@ -54,6 +54,11 @@ class MainViewModel: ObservableObject {
         }
     }
     
+    func modifyAnime(target: Anime, to: Anime) {
+        let animeId = self.animes.firstIndex(of: target)!
+        self.animes[animeId] = to
+    }
+    
     func getEpisode(epElement: Element) -> Episode? {
         do {
             let name = try epElement.select("div h3").text()
@@ -117,16 +122,14 @@ class MainViewModel: ObservableObject {
     }
     
     func downloadEpisode(anime: Anime, episode: Episode, source: Source, completion: @escaping (_ anime: Anime) -> Void) {
-        print("foi")
+        print("Foi")
         URLSession.shared.downloadTask(with: URL(string: source.file)!) { url, response, error in
-            print("terminou")
+            print("Terminou")
             guard let fileURL = url else { return }
             do {
                 let documentsURL = FileManager.default.urls(for: .documentDirectory,
                                                                in: .userDomainMask)[0]
                     .appendingPathComponent(anime.name, isDirectory: true)
-
-                print("anime: ", anime.name)
                 try FileManager.default.createDirectory(at: documentsURL, withIntermediateDirectories: true, attributes: nil)
                 let savedURL = documentsURL.appendingPathComponent("\(episode.name) \(source.label).\(source.type.split(separator: "/")[1])")
                 try FileManager.default.moveItem(at: fileURL, to: savedURL)

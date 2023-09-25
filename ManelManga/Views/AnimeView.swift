@@ -57,6 +57,8 @@ struct EpisodeCard: View {
     let episode: Episode
     @State var sources: [Source]?
     
+    @ObservedObject var session = CustomURLSession()
+    
     var body: some View {
         HStack(spacing: 15) {
             AsyncImage(url: URL(string: episode.thumb)) { image in
@@ -86,10 +88,11 @@ struct EpisodeCard: View {
                             Menu {
                                 ForEach(sources, id: \.self) { source in
                                     Button {
-                                        mainViewModel.downloadEpisode(anime: anime,
-                                                                      episode: episode,
-                                                                      source: source) { anime in
-                                            self.anime = anime
+                                        session.downloadEpisode(anime: anime, episode: episode, source: source) { savedAt in
+                                            var to = anime
+                                            to.episodes[to.episodes.firstIndex(of: episode)!].downloads.SD = savedAt.absoluteString
+                                            mainViewModel.modifyAnime(target: anime, to: to)
+                                            //MARK: Testar
                                         }
                                     } label: {
                                         Label("Baixar \(source.label)", systemImage: "arrow.down.to.line")
@@ -97,8 +100,15 @@ struct EpisodeCard: View {
                                 }
                             } label: {
                                 Image(systemName: "arrow.down.to.line")
+                                    .font(.title3)
                                     .bold()
+                                    .padding(5)
                                     .overlay {
+                                        Circle()
+                                            .trim(from: 0, to: session.progress)
+                                            .stroke(.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                            .rotationEffect(Angle(degrees: -90))
+                                            .animation(.easeIn(duration: 0.15), value: session.progress)
                                         if episode.downloads.downloaded {
                                             Image(systemName: "checkmark.circle.fill")
                                                 .font(.system(size: 12))
@@ -111,7 +121,7 @@ struct EpisodeCard: View {
                     Image(systemName: "ellipsis")
                         .bold()
                         .onTapGesture {
-                            anime.episodes[0].downloads.HD = ""
+                            session.resume()
                         }
                 }
                 .font(.title2)
@@ -127,20 +137,20 @@ struct EpisodeCard: View {
 
 struct AnimeView_Previews: PreviewProvider {
     static var previews: some View {
-//        ContentView()
-        AnimeView(anime: Anime(name: "Jujutsu Kaisen 2nd Season",
-                               image: "https://animes.vision/storage/capa/WpyWcVumukyDxU4NOxiDzhdOZksAho2sWR23Fnzx.jpg",
-                               link: "https://animes.vision/animes/one-piece",
-                               episodes: [
-                                Episode(name: "Name",
-                                        thumb: "https://animes.vision/storage/screenshot/I9hvBcj20yfzZS4P0FYHdpB6D9fBoKoiTUEPAW9I.jpg",
-                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-05/legendado",
-                                        downloads: DownloadedVideo()),
-                                Episode(name: "Name2",
-                                        thumb: "https://animes.vision/storage/screenshot/2t7fJaUHcfHnOIThKZ21ICKa4E7kO98zqh5hPYyW.jpg",
-                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-09/legendado",
-                                        downloads: DownloadedVideo(SD: nil, HD: "", FHD: ""))
-                               ]))
-            .environmentObject(MainViewModel())
+        ContentView()
+//        AnimeView(anime: Anime(name: "Jujutsu Kaisen 2nd Season",
+//                               image: "https://animes.vision/storage/capa/WpyWcVumukyDxU4NOxiDzhdOZksAho2sWR23Fnzx.jpg",
+//                               link: "https://animes.vision/animes/one-piece",
+//                               episodes: [
+//                                Episode(name: "Name",
+//                                        thumb: "https://animes.vision/storage/screenshot/I9hvBcj20yfzZS4P0FYHdpB6D9fBoKoiTUEPAW9I.jpg",
+//                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-05/legendado",
+//                                        downloads: DownloadedVideo()),
+//                                Episode(name: "Name2",
+//                                        thumb: "https://animes.vision/storage/screenshot/2t7fJaUHcfHnOIThKZ21ICKa4E7kO98zqh5hPYyW.jpg",
+//                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-09/legendado",
+//                                        downloads: DownloadedVideo(SD: nil, HD: "", FHD: ""))
+//                               ]))
+//            .environmentObject(MainViewModel())
     }
 }

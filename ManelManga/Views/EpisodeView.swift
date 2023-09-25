@@ -44,9 +44,7 @@ struct EpisodeView: View {
     func getEpisode() {
         if episode.downloads.downloaded {
             let url = episode.downloads.FHD ?? episode.downloads.HD ?? episode.downloads.SD ??  ""
-            let documentsURL = FileManager.default.urls(for: .documentDirectory,
-                                                           in: .userDomainMask)[0]
-                .appendingPathComponent(anime.name).appendingPathComponent(url)
+            let documentsURL = URL(string: url)!
             let asset = AVURLAsset(url: documentsURL)
             
             player.replaceCurrentItem(with: AVPlayerItem(asset: asset))
