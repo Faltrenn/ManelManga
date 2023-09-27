@@ -42,8 +42,7 @@ struct EpisodeView: View {
     }
     
     func getEpisode() {
-        if episode.downloads.downloaded {
-            let url = episode.downloads.FHD ?? episode.downloads.HD ?? episode.downloads.SD ??  ""
+        if let url = episode.downloads.get() {
             let documentsURL = URL(string: url)!
             let asset = AVURLAsset(url: documentsURL)
             

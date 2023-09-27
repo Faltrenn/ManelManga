@@ -12,7 +12,7 @@ import AVKit
 
 struct ContentView: View {
     @ObservedObject var mainViewModel: MainViewModel = MainViewModel()
-    @State var page: Pages = .Anime
+    @State var page: Pages = .Manga
     
     var body: some View {
         VStack {
@@ -26,7 +26,6 @@ struct ContentView: View {
                 TabBar(page: $page)
             }
         }
-        .environmentObject(mainViewModel)
     }
 }
 
@@ -56,5 +55,6 @@ struct TabBar: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(MainViewModel())
     }
 }

@@ -90,7 +90,7 @@ struct EpisodeCard: View {
                                     Button {
                                         session.downloadEpisode(anime: anime, episode: episode, source: source) { savedAt in
                                             var to = anime
-                                            to.episodes[to.episodes.firstIndex(of: episode)!].downloads.SD = savedAt.absoluteString
+                                            to.episodes[to.episodes.firstIndex(of: episode)!].downloads.set(source: source, url: savedAt)
                                             mainViewModel.modifyAnime(target: anime, to: to)
                                             //MARK: Testar
                                         }
@@ -104,12 +104,17 @@ struct EpisodeCard: View {
                                     .bold()
                                     .padding(5)
                                     .overlay {
-                                        Circle()
-                                            .trim(from: 0, to: session.progress)
-                                            .stroke(.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                            .rotationEffect(Angle(degrees: -90))
-                                            .animation(.easeIn(duration: 0.15), value: session.progress)
-                                        if episode.downloads.downloaded {
+                                        if session.downloadTask != nil {
+                                            Circle()
+                                                .stroke(.gray, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                                .rotationEffect(Angle(degrees: -90))
+                                            Circle()
+                                                .trim(from: 0, to: session.progress)
+                                                .stroke(.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                                                .rotationEffect(Angle(degrees: -90))
+                                                .animation(.easeIn(duration: 0.15), value: session.progress)
+                                        }
+                                        if episode.downloads.get() != nil {
                                             Image(systemName: "checkmark.circle.fill")
                                                 .font(.system(size: 12))
                                                 .offset(CGSize(width: 10, height: -10))
@@ -138,6 +143,7 @@ struct EpisodeCard: View {
 struct AnimeView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(MainViewModel())
 //        AnimeView(anime: Anime(name: "Jujutsu Kaisen 2nd Season",
 //                               image: "https://animes.vision/storage/capa/WpyWcVumukyDxU4NOxiDzhdOZksAho2sWR23Fnzx.jpg",
 //                               link: "https://animes.vision/animes/one-piece",

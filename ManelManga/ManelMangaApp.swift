@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct ManelMangaApp: App {
+    @ObservedObject var mainViewModel = MainViewModel()
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(mainViewModel)
 //            Test()
         }
     }

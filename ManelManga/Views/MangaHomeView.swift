@@ -9,9 +9,9 @@ import SwiftUI
 import SwiftSoup
 
 struct MangaHomeView: View {
-    @State var isPresented = false
-    @State var mangas: [Manga] = []
-
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @State var isPresented: Bool = false
+    
     var body: some View {
         NavigationStack {
             ZStack(alignment: .topTrailing) {
@@ -27,11 +27,11 @@ struct MangaHomeView: View {
                 .padding(.horizontal)
                 ScrollView {
                     VStack(alignment: .leading) {
-                        ForEach(mangas, id: \.self) { manga in
+                        ForEach(mainViewModel.mangas, id: \.self) { manga in
                             NavigationLink {
                                 MangaView(manga: manga)
                             } label: {
-                                MangaCard(manga: manga, mangas: $mangas)
+                                MangaCard(manga: manga)
                             }
                         }
                     }
@@ -41,58 +41,27 @@ struct MangaHomeView: View {
             }
         }
         .alert("Adicionar manga", isPresented: $isPresented) {
-            AddManga(mangas: $mangas)
-        }
-        .onAppear {
-            guard let data = UserDefaults.standard.data(forKey: "mangas") else {
-                return
-            }
-            do {
-                mangas = try JSONDecoder().decode([Manga].self, from: data)
-            } catch { }
+            AddManga()
         }
     }
 }
 
-
 struct AddManga: View {
-    @State var linkManga = ""
-    @Binding var mangas: [Manga]
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @State var mangaLink = "https://www.brmangas.net/manga/underworld-restaurant-online/"
     
     var body: some View {
-        TextField("Link do mangá", text: $linkManga)
+        TextField("Link do mangá", text: $mangaLink)
         Button("Adicionar") {
-            addManga()
+            mainViewModel.addManga(mangaLink: mangaLink)
         }
         Button("Cancelar", role: .cancel) { }
-    }
-    
-    func addManga() {
-        guard let url = URL(string: linkManga) else {
-            return
-        }
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-                do {
-                    let doc = try SwiftSoup.parse(html)
-                    
-                    let name = try doc.select("div[class=post-title] h1").text()
-                    
-                    let image = try doc.select("div[class=summary_image] a img").attr("src")
-                    
-                    mangas.append(Manga(name: name, image: image, link: linkManga))
-                    UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
-                } catch {
-                    print(error)
-                }
-            }
-        }.resume()
     }
 }
 
 struct MangaCard: View {
-    let manga: Manga
-    @Binding var mangas: [Manga]
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @ObservedObject var manga: MangaClass
     
     var body: some View {
         HStack {
@@ -117,12 +86,10 @@ struct MangaCard: View {
                 HStack {
                     Spacer()
                     Button {
-                        mangas.removeAll { mng in
+                        mainViewModel.mangas.removeAll { mng in
                             mng == manga
                         }
-                        do {
-                            UserDefaults.standard.setValue(try JSONEncoder().encode(self.mangas), forKey: "mangas")
-                        } catch { }
+                        mainViewModel.saveMangas()
                     } label: {
                         Circle()
                             .fill(.red)
@@ -133,7 +100,6 @@ struct MangaCard: View {
                     }
                 }
                 .padding()
-                
             }
             .font(.title3)
         }
@@ -145,5 +111,6 @@ struct MangaCard: View {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+            .environmentObject(MainViewModel())
     }
 }

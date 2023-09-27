@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftSoup
 
 struct MangaView: View {
-    let manga: Manga
-    @State var volumes: [String] = []
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @ObservedObject var manga: MangaClass
     
     var body: some View {
         NavigationStack {
@@ -30,49 +30,56 @@ struct MangaView: View {
                                 }
                         }
                     }
-                    ForEach(volumes, id: \.self) { volume in
+                    ForEach(manga.volumes, id: \.self) { volume in
                         NavigationLink {
-                            VolumeView(link: volume)
+                            VolumeView(volume: volume)
                         } label: {
-                            Text("Volume: \(volumes.count - volumes.firstIndex(of: volume)!)")
+                            Text(volume.name)
                                 .font(.title3)
                                 .bold()
                         }
                     }
                 }
-                .onAppear {
-                    getVolumes(link: manga.link)
-                }
             }
         }
-    }
-    
-    func getVolumes(link: String) {
-        guard let url = URL(string: link) else {
-            return
-        }
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-                do {
-                    let doc = try SwiftSoup.parse(html)
-                    let elements = try doc.select("li[class=wp-manga-chapter] a").array()
-                    var vs: [String] = []
-                    for volume in elements {
-                        vs.append(try volume.attr("href"))
-                    }
-                    DispatchQueue.main.async {
-                        volumes = vs
-                    }
-                } catch {
-                    print(error)
-                }
+        .onAppear {
+            guard let url = URL(string: manga.link) else {
+                return
             }
-        }.resume()
+            
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                    do {
+                        let doc = try SwiftSoup.parse(html)
+                        
+                        let volumesElements = try doc.select("li[class=row lista_ep] a").array()
+                        
+                        var volumes: [VolumeClass] = []
+                        for volume in volumesElements {
+                            volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: nil, downloadedImages: nil).getClass())
+                        }
+                        if volumes != manga.volumes {
+                            for volume in manga.volumes {
+                                if let vol = volumes.first(where: { $0 == volume }) {
+                                    vol.images = volume.images
+                                    vol.downloadedImages = volume.downloadedImages
+                                }
+                            }
+                            
+                            manga.volumes = volumes
+//                            mainViewModel.saveMangas()
+                        }
+                    } catch {
+                        print(error)
+                    }
+                }
+            }.resume()
+        }
     }
 }
 
 struct MangaView_Previews: PreviewProvider {
     static var previews: some View {
-        MangaView(manga: Manga(name: "Name", image: "Image", link: "Link"))
+        MangaView(manga: MainViewModel().mangas.first ?? Manga(name: "Manga", image: "https://viralcontentmxp.xyz/uploads/u/underworld-restaurant/underworld-restaurant.jpg", link: "https://www.brmangas.net/manga/underworld-restaurant-online/", volumes: [Volume(name: "Volume 3", link: "https://www.brmangas.net/ler/underworld-restaurant-3-online/")]).getClass())
     }
 }

@@ -11,6 +11,22 @@ struct Manga: Hashable, Codable {
     var name: String
     var image: String
     var link: String
+    var volumes: [Volume]
+    
+    func getClass() -> MangaClass {
+        return MangaClass(manga: self)
+    }
+}
+
+struct Volume: Codable, Hashable {
+    var name: String
+    var link: String
+    var images: [URL]?
+    var downloadedImages: [URL]?
+    
+    func getClass() -> VolumeClass {
+        return VolumeClass(volume: self)
+    }
 }
 
 struct Anime: Codable, Hashable {
@@ -28,11 +44,68 @@ struct Episode: Codable, Hashable {
     var visualized: Bool = false
 }
 
+enum VideoQuality: CaseIterable {
+    case SD, HD, FHD
+    static func getQuality(source: Source) -> VideoQuality? {
+        let type = source.label.split(separator: " ")[0]
+        switch type {
+        case "SD":
+            return .SD
+        case "HD":
+            return .HD
+        case "FHD":
+            return .FHD
+        default:
+            return nil
+        }
+    }
+}
+
 struct DownloadedVideo: Codable, Hashable {
     var SD: String? = nil
     var HD: String? = nil
     var FHD: String? = nil
-    var downloaded: Bool { return (SD != nil || HD != nil || FHD != nil) }
+    
+    mutating func set(source: Source, url: URL) {
+        if let quality = VideoQuality.getQuality(source: source) {
+            switch quality {
+            case .SD:
+                SD = url.absoluteString
+            case .HD:
+                HD = url.absoluteString
+            case .FHD:
+                FHD = url.absoluteString
+            }
+        }
+        //MARK: Testar
+    }
+    
+    mutating func reset(quality: VideoQuality) {
+        switch quality {
+        case .SD:
+            SD = nil
+        case .HD:
+            HD = nil
+        case .FHD:
+            FHD = nil
+        }
+        //MARK: Testar
+    }
+    
+    func get(quality: VideoQuality? = nil) -> String? {
+        if let quality = quality {
+            switch quality {
+            case .SD:
+                return SD
+            case .HD:
+                return HD
+            case .FHD:
+                return FHD
+            }
+        } else {
+            return FHD ?? HD ?? SD ?? nil
+        }
+    }
 }
 
 struct Source: Codable, Hashable {
@@ -89,7 +162,7 @@ class CustomURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         do {
             try FileManager.default.createDirectory(at: saveAt, withIntermediateDirectories: true)
         } catch { }
-        saveAt = saveAt.appendingPathComponent("\(episode.name).\(source.type.split(separator: "/")[1])")
+        saveAt = saveAt.appendingPathComponent("\(episode.name).\(source.label.split(separator: "/")[1])")
         self.startDownlod(link: source.file, saveAt: saveAt)
     }
     
