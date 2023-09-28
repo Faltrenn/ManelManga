@@ -34,9 +34,7 @@ struct MangaView: View {
                         NavigationLink {
                             VolumeView(volume: volume)
                         } label: {
-                            Text(volume.name)
-                                .font(.title3)
-                                .bold()
+                            VolumeCard(manga: manga, volume: volume)
                         }
                     }
                 }
@@ -56,7 +54,7 @@ struct MangaView: View {
                         
                         var volumes: [VolumeClass] = []
                         for volume in volumesElements {
-                            volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: nil, downloadedImages: nil).getClass())
+                            volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: []).getClass())
                         }
                         if volumes != manga.volumes {
                             for volume in manga.volumes {
@@ -67,7 +65,7 @@ struct MangaView: View {
                             }
                             
                             manga.volumes = volumes
-//                            mainViewModel.saveMangas()
+                            mainViewModel.saveMangas()
                         }
                     } catch {
                         print(error)
@@ -78,8 +76,56 @@ struct MangaView: View {
     }
 }
 
+struct VolumeCard: View {
+    @EnvironmentObject var mainViewModel: MainViewModel
+    @ObservedObject var manga: MangaClass
+    @ObservedObject var volume: VolumeClass
+    @ObservedObject var session = CustomURLSession()
+    
+    var body: some View {
+        HStack {
+            Text(volume.name)
+                .font(.title3)
+                .bold()
+            Button {
+                session.downloadVolume(manga: manga, volume: volume) { _ in
+                    mainViewModel.saveMangas()
+                }
+            } label: {
+                Image(systemName: "arrow.down.to.line")
+                    .font(.title)
+            }
+        }
+        .frame(maxWidth: .infinity)
+    }
+    
+    func getImages() {
+        if volume.images.count == 0 {
+            guard let url = URL(string: volume.link) else {
+                return
+            }
+            
+            URLSession.shared.dataTask(with: url) { data, _, error in
+                if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                    do {
+                        let imagesLinks = html.split(separator: "\\\"images\\\": ")[1].split(separator: "}")[0].replacing("\\", with: "")
+                        let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
+                        for image in images {
+                            if let imageUrl = URL(string: image) {
+                                volume.images.append(imageUrl)
+                            }
+                        }
+                        mainViewModel.saveMangas()
+                    } catch { }
+                }
+            }.resume()
+        }
+    }
+}
+
 struct MangaView_Previews: PreviewProvider {
     static var previews: some View {
-        MangaView(manga: MainViewModel().mangas.first ?? Manga(name: "Manga", image: "https://viralcontentmxp.xyz/uploads/u/underworld-restaurant/underworld-restaurant.jpg", link: "https://www.brmangas.net/manga/underworld-restaurant-online/", volumes: [Volume(name: "Volume 3", link: "https://www.brmangas.net/ler/underworld-restaurant-3-online/")]).getClass())
+        ContentView()
+            .environmentObject(MainViewModel())
     }
 }

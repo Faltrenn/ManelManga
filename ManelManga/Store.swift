@@ -21,8 +21,8 @@ struct Manga: Hashable, Codable {
 struct Volume: Codable, Hashable {
     var name: String
     var link: String
-    var images: [URL]?
-    var downloadedImages: [URL]?
+    var images: [URL]
+    var downloadedImages: [URL]
     
     func getClass() -> VolumeClass {
         return VolumeClass(volume: self)
@@ -152,6 +152,10 @@ class CustomURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
     
     private var completion: ((_ savedAt: URL) -> Void)?
     
+    private var imageId: Int?
+    private var volume: VolumeClass?
+    private var volumeUrl: URL?
+    
     func getDirectory() -> URL {
         return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
     }
@@ -164,6 +168,30 @@ class CustomURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         } catch { }
         saveAt = saveAt.appendingPathComponent("\(episode.name).\(source.label.split(separator: "/")[1])")
         self.startDownlod(link: source.file, saveAt: saveAt)
+    }
+    
+    func downloadVolume(manga: MangaClass, volume: VolumeClass, completion: ((_ savedAt: URL) -> Void)? = nil) {
+        let url = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent(manga.name, isDirectory: true)
+            .appendingPathComponent(manga.name, isDirectory: true)
+        self.completion = completion
+        do {
+            try FileManager.default.createDirectory(at: url, withIntermediateDirectories: true)
+        } catch {
+            print(error)
+        }
+        
+        self.imageId = 0
+        self.volume = volume
+        self.volumeUrl = url.appendingPathComponent(volume.name)
+        do {
+            try FileManager.default.createDirectory(at: self.volumeUrl!, withIntermediateDirectories: true)
+        } catch {
+            print(error)
+        }
+        let link = volume.images[0].absoluteString
+        let parts = link.split(separator: ".")
+        let urll = self.volumeUrl!.appendingPathComponent("Image \(imageId!).\(parts[2])")
+        self.startDownlod(link: link, saveAt: urll)
     }
     
     func startDownlod(link: String, saveAt: URL) {
@@ -199,8 +227,20 @@ class CustomURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         do {
             try FileManager.default.moveItem(at: location, to: saveAt!)
         } catch { }
+        
         if let completion = completion {
             completion(saveAt!)
+        }
+        
+        DispatchQueue.main.async {
+            self.volume!.downloadedImages.append(self.saveAt!)
+            
+            if self.imageId != nil, self.imageId! + 1 < self.volume!.images.count {
+                self.imageId! += 1
+                let link = self.volume!.images[self.imageId!].absoluteString
+                let parts = link.split(separator: ".")
+                self.startDownlod(link: link, saveAt: self.volumeUrl!.appendingPathComponent("Image \(self.imageId!).\(parts[2])"))
+            }
         }
     }
     

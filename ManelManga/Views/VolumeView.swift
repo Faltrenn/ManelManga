@@ -19,8 +19,8 @@ struct VolumeView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                if let downloadedImages = volume.downloadedImages {
-                    ForEach(downloadedImages, id:\.self) { downloadedImage in
+                if volume.downloadedImages.count > 0 {
+                    ForEach(volume.downloadedImages, id:\.self) { downloadedImage in
                         AsyncImage(url: downloadedImage) { image in
                             image
                                 .resizable()
@@ -29,8 +29,8 @@ struct VolumeView: View {
                             ProgressView()
                         }
                     }
-                } else if let images = volume.images {
-                    ForEach(images, id:\.self) { image in
+                } else if volume.images.count > 0 {
+                    ForEach(volume.images, id:\.self) { image in
                         AsyncImage(url: image) { img in
                             img
                                 .resizable()
@@ -69,7 +69,7 @@ struct VolumeView: View {
     }
         
     func getImages() {
-        if volume.images == nil {
+        if volume.images.count == 0 {
             guard let url = URL(string: volume.link) else {
                 return
             }
@@ -79,10 +79,9 @@ struct VolumeView: View {
                     do {
                         let imagesLinks = html.split(separator: "\\\"images\\\": ")[1].split(separator: "}")[0].replacing("\\", with: "")
                         let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
-                        volume.images = []
                         for image in images {
                             if let imageUrl = URL(string: image) {
-                                volume.images!.append(imageUrl)
+                                volume.images.append(imageUrl)
                             }
                         }
                         mainViewModel.saveMangas()

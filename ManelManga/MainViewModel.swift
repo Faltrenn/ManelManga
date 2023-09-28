@@ -85,11 +85,10 @@ class VolumeClass: ObservableObject, Hashable {
         hasher.combine(self.name)
     }
     
-    
     var name: String
     var link: String
-    @Published var images: [URL]?
-    @Published var downloadedImages: [URL]?
+    @Published var images: [URL]
+    @Published var downloadedImages: [URL]
     
     init(volume: Volume) {
         self.name = volume.name
@@ -167,7 +166,7 @@ class MainViewModel: ObservableObject {
                     
                     var volumes: [Volume] = []
                     for volume in volumesElements {
-                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: nil, downloadedImages: nil))
+                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: []))
                     }
                     
                     self.mangas.append(Manga(name: name, image: image, link: mangaLink, volumes: volumes).getClass())
@@ -293,6 +292,7 @@ class MainViewModel: ObservableObject {
                 mangas.append(manga.getStruct())
             }
             UserDefaults().set(try JSONEncoder().encode(mangas), forKey: "mangas")
+            print("salvou")
         } catch { }
     }
 }
