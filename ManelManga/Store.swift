@@ -150,10 +150,8 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
     private var mainViewModel: MainViewModel?
     
     private func reset() {
-        DispatchQueue.main.async {
-            self.downloadTask = nil
-            self.progress = 0.0
-        }
+        self.downloadTask = nil
+        self.progress = 0.0
         self.element = nil
         self.elements = []
         self.downloadCount = 0
@@ -227,9 +225,14 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         if self.downloadCount < self.elements.count {
             self.startDownload()
         } else {
-            reset()
+            DispatchQueue.main.async {
+                self.element!.volume.downloaded = true
+                self.saveVolume()
+                self.reset()
+            }
         }
     }
+    
     // Change
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
         let progress = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)

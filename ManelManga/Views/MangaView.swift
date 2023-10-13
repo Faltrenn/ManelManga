@@ -54,7 +54,7 @@ struct VolumeCard: View {
             Text(volume.name)
                 .font(.title3)
                 .bold()
-            if volume.downloadedImages.count == 0 || session.downloadTask != nil {
+            if !volume.downloaded {
                 Button {
                     session.downloadVolume(manga: manga, volume: volume, mainViewModel: mainViewModel)
                 } label: {

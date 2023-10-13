@@ -17,7 +17,7 @@ struct VolumeView: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if volume.downloadedImages.count > 0 {
+                    if volume.downloaded {
                         ForEach(volume.downloadedImages, id: \.self) { image in
                             AsyncImage(url: getImageURL(manga: manga, volume: volume, image: image)) { img in
                                 img

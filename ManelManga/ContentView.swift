@@ -52,9 +52,7 @@ struct TabBar: View {
 }
 
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(MainViewModel())
-    }
+#Preview {
+    ContentView()
+        .environmentObject(MainViewModel())
 }

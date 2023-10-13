@@ -58,6 +58,7 @@ struct Volume: Codable, Hashable{
     var link: String
     var images: [URL]
     var downloadedImages: [String]
+    var downloaded: Bool
     
     func getClass() -> VolumeClass {
         return VolumeClass(volume: self)
@@ -110,12 +111,14 @@ class VolumeClass: ObservableObject, Hashable {
     var link: String
     @Published var images: [URL]
     @Published var downloadedImages: [String]
+    @Published var downloaded: Bool
     
     init(volume: Volume) {
         self.name = volume.name
         self.link = volume.link
         self.images = volume.images
         self.downloadedImages = volume.downloadedImages
+        self.downloaded = volume.downloaded
     }
     
     func getImages(completion: (() -> Void)? = nil) {
@@ -142,7 +145,7 @@ class VolumeClass: ObservableObject, Hashable {
     }
     
     func getStruct() -> Volume {
-        return Volume(name: self.name, link: self.link, images: self.images, downloadedImages: self.downloadedImages)
+        return Volume(name: self.name, link: self.link, images: self.images, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
     }
 }
 
@@ -198,7 +201,7 @@ class MainViewModel: ObservableObject {
                     
                     var volumes: [Volume] = []
                     for volume in volumesElements {
-                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: []))
+                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: [], downloaded: false))
                     }
                     
                     DispatchQueue.main.async {
