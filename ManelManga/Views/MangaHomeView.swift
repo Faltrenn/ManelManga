@@ -48,7 +48,7 @@ struct MangaHomeView: View {
 
 struct AddManga: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    @State var mangaLink = "https://www.brmangas.net/manga/underworld-restaurant-online/"
+    @State var mangaLink = "https://www.brmangas.net/manga/is-this-hero-for-real-online/"
     
     var body: some View {
         TextField("Link do mangá", text: $mangaLink)
@@ -86,10 +86,7 @@ struct MangaCard: View {
                 HStack {
                     Spacer()
                     Button {
-                        mainViewModel.mangas.removeAll { mng in
-                            mng == manga
-                        }
-                        mainViewModel.saveMangas()
+                        mainViewModel.removeManga(manga: manga)
                     } label: {
                         Circle()
                             .fill(.red)
@@ -108,9 +105,7 @@ struct MangaCard: View {
     }
 }
 
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(MainViewModel())
-    }
+#Preview{
+    ContentView()
+        .environmentObject(MainViewModel())
 }

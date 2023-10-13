@@ -10,37 +10,45 @@ import SwiftSoup
 
 struct VolumeView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
+    var manga: MangaClass
     @ObservedObject var volume: VolumeClass
     
-//    @State private var currentZoom = 0.0
-//    @State private var totalZoom = 1.0
+    @State private var currentZoom = 0.0
+    @State private var totalZoom = 1.0
     
     let maxZoom = 5.0
     var body: some View {
-        ScrollView {
-            VStack(spacing: 0) {
-                if volume.downloadedImages.count > 0 {
-                    ForEach(volume.downloadedImages, id:\.self) { downloadedImage in
-                        AsyncImage(url: downloadedImage) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            ProgressView()
+        VStack {
+            ScrollView {
+                VStack(spacing: 0) {
+                    if volume.downloadedImages.count > 0 {
+                        ForEach(volume.downloadedImages, id: \.self) { image in
+                            AsyncImage(url: getImageURL(manga: manga, volume: volume, image: image)) { img in
+                                img
+                                    .resizable()
+                                    .scaledToFit()
+                            } placeholder: {
+                                ProgressView()
+                            }
+                        }
+                    } else {
+                        ForEach(volume.images, id: \.self) { image in
+                            AsyncImage(url: image) { img in
+                                img
+                                    .resizable()
+                                    .scaledToFit()
+                            } placeholder: {
+                                ProgressView()
+                            }
                         }
                     }
-                } else if volume.images.count > 0 {
-                    ForEach(volume.images, id:\.self) { image in
-                        AsyncImage(url: image) { img in
-                            img
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                        } placeholder: {
-                            ProgressView()
-                        }
-                    }
-                } else {
-                    ProgressView()
+                }
+            }
+        }
+        .onAppear {
+            if self.volume.downloadedImages.count == 0 {
+                self.volume.getImages {
+                    mainViewModel.saveMangas()
                 }
             }
         }
@@ -63,32 +71,6 @@ struct VolumeView: View {
 //                totalZoom = 1
 //            })
 //        )
-        .onAppear {
-            getImages()
-        }
-    }
-        
-    func getImages() {
-        if volume.images.count == 0 {
-            guard let url = URL(string: volume.link) else {
-                return
-            }
-            
-            URLSession.shared.dataTask(with: url) { data, _, error in
-                if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-                    do {
-                        let imagesLinks = html.split(separator: "\\\"images\\\": ")[1].split(separator: "}")[0].replacing("\\", with: "")
-                        let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
-                        for image in images {
-                            if let imageUrl = URL(string: image) {
-                                volume.images.append(imageUrl)
-                            }
-                        }
-                        mainViewModel.saveMangas()
-                    } catch { }
-                }
-            }.resume()
-        }
     }
 }
 

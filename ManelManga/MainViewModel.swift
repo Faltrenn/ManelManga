@@ -42,6 +42,27 @@ class EpisodeClass: ObservableObject {
         return Episode(name: self.name, thumb: self.thumb, videoLink: self.videoLink, downloads: self.downloads, visualized: self.visualized)
     }
 }
+struct Manga: Codable, Hashable {
+    var name: String
+    var image: String
+    var link: String
+    var volumes: [Volume]
+    
+    func getClass() -> MangaClass {
+        return MangaClass(manga: self)
+    }
+}
+
+struct Volume: Codable, Hashable{
+    var name: String
+    var link: String
+    var images: [URL]
+    var downloadedImages: [String]
+    
+    func getClass() -> VolumeClass {
+        return VolumeClass(volume: self)
+    }
+}
 
 class MangaClass: ObservableObject, Hashable {
     static func == (lhs: MangaClass, rhs: MangaClass) -> Bool {
@@ -63,7 +84,7 @@ class MangaClass: ObservableObject, Hashable {
         self.link = manga.link
         self.volumes = []
         for volume in manga.volumes {
-            volumes.append(VolumeClass(volume: volume))
+            volumes.append(volume.getClass())
         }
     }
     
@@ -88,13 +109,36 @@ class VolumeClass: ObservableObject, Hashable {
     var name: String
     var link: String
     @Published var images: [URL]
-    @Published var downloadedImages: [URL]
+    @Published var downloadedImages: [String]
     
     init(volume: Volume) {
         self.name = volume.name
         self.link = volume.link
         self.images = volume.images
         self.downloadedImages = volume.downloadedImages
+    }
+    
+    func getImages(completion: (() -> Void)? = nil) {
+        guard let url = URL(string: link) else { return }
+        self.images = []
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                do {
+                    let imagesLinks = html.split(separator: "\\\"images\\\": ")[1].split(separator: "}")[0].replacing("\\", with: "")
+                    let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
+                    for image in images {
+                        if let imageUrl = URL(string: image) {
+                            DispatchQueue.main.async {
+                                self.images.append(imageUrl)
+                            }
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        completion?()
+                    }
+                } catch { }
+            }
+        }.resume()
     }
     
     func getStruct() -> Volume {
@@ -118,18 +162,7 @@ class MainViewModel: ObservableObject {
         }
     }
     
-    @Published private var _mangas: [MangaClass] = []
-    var mangas: [MangaClass] {
-        get {
-            return _mangas
-        }
-        set(newValue) {
-            DispatchQueue.main.async {
-                self._mangas = newValue
-                self.saveMangas()
-            }
-        }
-    }
+    @Published private(set) var mangas: [MangaClass] = []
     
     init() {
         if let data = UserDefaults.standard.data(forKey: "animes") {
@@ -141,12 +174,11 @@ class MainViewModel: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: "mangas") {
             do {
                 for manga in try JSONDecoder().decode([Manga].self, from: data) {
-                    self.mangas.append(MangaClass(manga: manga))
+                    self.mangas.append(manga.getClass())
                 }
             } catch { }
         }
     }
-    
     
     func addManga(mangaLink: String) {
         guard let url = URL(string: mangaLink) else {
@@ -169,15 +201,18 @@ class MainViewModel: ObservableObject {
                         volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: []))
                     }
                     
-                    self.mangas.append(Manga(name: name, image: image, link: mangaLink, volumes: volumes).getClass())
+                    DispatchQueue.main.async {
+                        self.mangas.append(Manga(name: name, image: image, link: mangaLink, volumes: volumes).getClass())
+                        self.saveMangas()
+                    }
                 } catch { }
             }
         }.resume()
     }
     
-    func modifyAnime(target: Anime, to: Anime) {
-        let animeId = self.animes.firstIndex(of: target)!
-        self.animes[animeId] = to
+    func removeManga(manga: MangaClass) {
+        self.mangas.remove(at: self.mangas.firstIndex(of: manga)!)
+        self.saveMangas()
     }
     
     func getEpisode(epElement: Element) -> Episode? {
@@ -292,14 +327,7 @@ class MainViewModel: ObservableObject {
                 mangas.append(manga.getStruct())
             }
             UserDefaults().set(try JSONEncoder().encode(mangas), forKey: "mangas")
-            print("salvou")
         } catch { }
     }
 }
 
-struct Teste_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(MainViewModel())
-    }
-}

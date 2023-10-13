@@ -1,141 +1,64 @@
 //
-//  Store.swift
+//  TestView.swift
 //  ManelManga
 //
-//  Created by Emanuel on 17/09/23.
+//  Created by Emanuel on 27/09/23.
 //
 
-import Foundation
+import SwiftUI
 
-func getMangaDirectory() -> URL {
+struct TestView: View {
+    @ObservedObject var session = MangaURLSession()
+    
+    let manga = Manga(name: "Manga",
+                      image: "",
+                      link: "",
+                      volumes: [
+                        Volume(name: "Volume 0",
+                               link: "",
+                               images: [
+                                URL(string: "https://dn1.imgstatic.club/uploads/j/jibaku-shounen-hanako-kun/0/1.png")!,
+                                URL(string: "https://dn1.imgstatic.club/uploads/j/jibaku-shounen-hanako-kun/0/2.png")!,
+                               ],
+                               downloadedImages: []),
+                        Volume(name: "Volume 1",
+                               link: "",
+                               images: [
+                                URL(string: "https://dn1.imgstatic.club/uploads/j/jibaku-shounen-hanako-kun/0/3.png")!,
+                                URL(string: "https://dn1.imgstatic.club/uploads/j/jibaku-shounen-hanako-kun/0/4.png")!
+                               ],
+                               downloadedImages: [])
+                      ]).getClass()
+    
+    var body: some View {
+        ScrollView {
+            ProgressView(value: session.progress)
+            ForEach(manga.volumes, id:\.self) { volume in
+                Text(volume.name)
+                    .font(.title)
+                ForEach(volume.downloadedImages, id: \.self) { url in
+                    Text(url.absoluteString)
+                    AsyncImage(url: url) {image in
+                        image
+                            .resizable()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                }
+            }
+            Button("Baixar volume 0") {
+//                session.downloadVolume(manga: manga, volume: manga.volumes[0])
+            }
+            Button("Baixar volume 1") {
+//                session.downloadVolume(manga: manga, volume: manga.volumes[1])
+            }
+            
+        }
+    }
+}
+
+func getDirectory() -> URL {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Mangas", isDirectory: true)
-}
-
-func getImageURL(manga: MangaClass, volume: VolumeClass, image: String) -> URL {
-    return getMangaDirectory()
-        .appendingPathComponent(manga.name)
-        .appendingPathComponent(volume.name)
-        .appendingPathComponent(image)
-}
-
-struct Anime: Codable, Hashable {
-    var name: String
-    var image: String
-    var link: String
-    var episodes: [Episode]
-}
-
-struct Episode: Codable, Hashable {
-    var name: String
-    var thumb: String
-    var videoLink: String
-    var downloads: DownloadedVideo = DownloadedVideo()
-    var visualized: Bool = false
-}
-
-enum VideoQuality: CaseIterable {
-    case SD, HD, FHD
-    static func getQuality(source: Source) -> VideoQuality? {
-        let type = source.label.split(separator: " ")[0]
-        switch type {
-        case "SD":
-            return .SD
-        case "HD":
-            return .HD
-        case "FHD":
-            return .FHD
-        default:
-            return nil
-        }
-    }
-}
-
-struct DownloadedVideo: Codable, Hashable {
-    var SD: String? = nil
-    var HD: String? = nil
-    var FHD: String? = nil
-    
-    mutating func set(source: Source, url: URL) {
-        if let quality = VideoQuality.getQuality(source: source) {
-            switch quality {
-            case .SD:
-                SD = url.absoluteString
-            case .HD:
-                HD = url.absoluteString
-            case .FHD:
-                FHD = url.absoluteString
-            }
-        }
-        //MARK: Testar
-    }
-    
-    mutating func reset(quality: VideoQuality) {
-        switch quality {
-        case .SD:
-            SD = nil
-        case .HD:
-            HD = nil
-        case .FHD:
-            FHD = nil
-        }
-        //MARK: Testar
-    }
-    
-    func get(quality: VideoQuality? = nil) -> String? {
-        if let quality = quality {
-            switch quality {
-            case .SD:
-                return SD
-            case .HD:
-                return HD
-            case .FHD:
-                return FHD
-            }
-        } else {
-            return FHD ?? HD ?? SD ?? nil
-        }
-    }
-}
-
-struct Source: Codable, Hashable {
-    var file: String
-    var type: String
-    var label: String
-}
-
-enum Pages: CaseIterable {
-    case Anime, Manga
-    
-    var unsIcon: String {
-        switch self {
-        case .Anime:
-            return "play.circle"
-        case .Manga:
-            return "book"
-        }
-    }
-    var selIcon: String {
-        switch self {
-        case .Anime:
-            return "play.circle.fill"
-        case .Manga:
-            return "book.fill"
-        }
-    }
-    var title: String {
-        switch self {
-        case .Anime:
-            return "Anime"
-        case .Manga:
-            return "Mangá"
-        }
-    }
-}
-
-struct DownloadElement {
-    let url: URL
-    let saveAt: URL
-    var volume: VolumeClass
 }
 
 
@@ -217,6 +140,7 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
     // Finish
     func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
         self.downloadCount += 1
+        self.progress = CGFloat(self.downloadCount) / CGFloat(self.elements.count)
         
         do {
             try FileManager.default.moveItem(at: location, to: self.element!.saveAt)
@@ -237,4 +161,9 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
             self.progress = (CGFloat(self.downloadCount) + progress) / CGFloat(self.elements.count)
         }
     }
+}
+
+
+#Preview {
+    TestView()
 }

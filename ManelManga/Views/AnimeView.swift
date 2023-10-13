@@ -57,7 +57,7 @@ struct EpisodeCard: View {
     let episode: Episode
     @State var sources: [Source]?
     
-    @ObservedObject var session = CustomURLSession()
+    @ObservedObject var session = MangaURLSession()
     
     var body: some View {
         HStack(spacing: 15) {
@@ -88,12 +88,12 @@ struct EpisodeCard: View {
                             Menu {
                                 ForEach(sources, id: \.self) { source in
                                     Button {
-                                        session.downloadEpisode(anime: anime, episode: episode, source: source) { savedAt in
-                                            var to = anime
-                                            to.episodes[to.episodes.firstIndex(of: episode)!].downloads.set(source: source, url: savedAt)
-                                            mainViewModel.modifyAnime(target: anime, to: to)
+//                                        session.downloadEpisode(anime: anime, episode: episode, source: source) { savedAt in
+//                                            var to = anime
+//                                            to.episodes[to.episodes.firstIndex(of: episode)!].downloads.set(source: source, url: savedAt)
+//                                            mainViewModel.modifyAnime(target: anime, to: to)
                                             //MARK: Testar
-                                        }
+//                                        }
                                     } label: {
                                         Label("Baixar \(source.label)", systemImage: "arrow.down.to.line")
                                     }
