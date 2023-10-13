@@ -13,10 +13,6 @@ struct VolumeView: View {
     var manga: MangaClass
     @ObservedObject var volume: VolumeClass
     
-    @State private var currentZoom = 0.0
-    @State private var totalZoom = 1.0
-    
-    let maxZoom = 5.0
     var body: some View {
         VStack {
             ScrollView {
@@ -52,25 +48,6 @@ struct VolumeView: View {
                 }
             }
         }
-//        .scaleEffect(currentZoom + totalZoom)
-//        .gesture(
-//            MagnificationGesture()
-//                .onChanged { value in
-//                    let newValue = currentZoom + totalZoom + value.magnitude - 1
-//                    if newValue > 1 {
-//                        currentZoom = value.magnitude - 1
-//                    }
-//                }
-//                .onEnded { value in
-//                    totalZoom += currentZoom
-//                    currentZoom = 0
-//                }
-//        )
-//        .gesture(TapGesture(count: 2)
-//            .onEnded({ _ in
-//                totalZoom = 1
-//            })
-//        )
     }
 }
 

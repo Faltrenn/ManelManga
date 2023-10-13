@@ -74,7 +74,6 @@ struct VolumeCard: View {
                         }
                         .animation(.easeIn, value: session.progress)
                 }
-                Text("\(session.progress)")
             }
         }
         .frame(maxWidth: .infinity)
