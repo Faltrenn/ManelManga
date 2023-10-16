@@ -193,7 +193,7 @@ class MangaClass: ObservableObject, Hashable {
             volume.downloadedImages = []
             volume.downloaded = false
             
-            MainViewModel.instance?.saveMangas()
+            MainViewModel.shared.saveMangas()
         }
     }
     
@@ -313,8 +313,6 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
     private var elements: [DownloadElement] = []
     private var downloadCount: Int = 0
     
-    private var mainViewModel: MainViewModel?
-    
     private func reset() {
         self.downloadTask = nil
         self.progress = 0.0
@@ -328,18 +326,14 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
             DispatchQueue.main.async {
                 let parts = element.saveAt.absoluteString.split(separator: "/")
                 element.volume.downloadedImages.append(String(data: parts.last!.removingPercentEncoding!.data(using: .utf8)!, encoding: .utf8)!)
-                if let mainViewModel = self.mainViewModel {
-                    mainViewModel.saveMangas()
-                }
+                MainViewModel.shared.saveMangas()
             }
         }
     }
     
-    func downloadVolume(manga: MangaClass, volume: VolumeClass, mainViewModel: MainViewModel) {
+    func downloadVolume(manga: MangaClass, volume: VolumeClass) {
         self.reset()
         volume.downloadedImages = []
-        
-        self.mainViewModel = mainViewModel
         
         let volumePath = volume.getDirectory(manga: manga)
         
@@ -393,7 +387,6 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         } else {
             DispatchQueue.main.async {
                 self.element!.volume.downloaded = true
-                self.saveVolume()
                 self.reset()
             }
         }

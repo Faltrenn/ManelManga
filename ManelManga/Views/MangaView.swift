@@ -56,7 +56,7 @@ struct VolumeCard: View {
                 .bold()
             if !volume.downloaded {
                 Button {
-                    session.downloadVolume(manga: manga, volume: volume, mainViewModel: mainViewModel)
+                    session.downloadVolume(manga: manga, volume: volume)
                 } label: {
                     Image(systemName: "arrow.down.to.line")
                         .font(.title2)
@@ -88,7 +88,7 @@ struct VolumeCard: View {
 }
 
 #Preview {
-    let mainViewModel = MainViewModel()
+    @ObservedObject var mainViewModel = MainViewModel.shared
     return MangaView(manga: mainViewModel.mangas.first!)
         .environmentObject(mainViewModel)
 }

@@ -140,10 +140,10 @@ struct EpisodeCard: View {
     }
 }
 
-struct AnimeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(MainViewModel())
+#Preview {
+    @ObservedObject var mainViewModel = MainViewModel.shared
+    return ContentView()
+        .environmentObject(mainViewModel)
 //        AnimeView(anime: Anime(name: "Jujutsu Kaisen 2nd Season",
 //                               image: "https://animes.vision/storage/capa/WpyWcVumukyDxU4NOxiDzhdOZksAho2sWR23Fnzx.jpg",
 //                               link: "https://animes.vision/animes/one-piece",
@@ -158,5 +158,4 @@ struct AnimeView_Previews: PreviewProvider {
 //                                        downloads: DownloadedVideo(SD: nil, HD: "", FHD: ""))
 //                               ]))
 //            .environmentObject(MainViewModel())
-    }
 }

@@ -27,10 +27,9 @@ class MainViewModel: ObservableObject {
     
     @Published private(set) var mangas: [MangaClass] = []
     
-    static var instance: MainViewModel?
+    static var shared = MainViewModel()
     
-    init() {
-        MainViewModel.instance = self
+    private init() {
         if let data = UserDefaults.standard.data(forKey: "animes") {
             do {
                 self.animes = try JSONDecoder().decode([Anime].self, from: data)

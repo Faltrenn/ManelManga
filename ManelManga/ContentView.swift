@@ -11,7 +11,7 @@ import AVKit
 
 
 struct ContentView: View {
-    @ObservedObject var mainViewModel: MainViewModel = MainViewModel()
+    @ObservedObject var mainViewModel = MainViewModel.shared
     @State var page: Pages = .Manga
     
     var body: some View {
@@ -53,6 +53,7 @@ struct TabBar: View {
 
 
 #Preview {
-    ContentView()
-        .environmentObject(MainViewModel())
+    @ObservedObject var mainViewModel = MainViewModel.shared
+    return ContentView()
+        .environmentObject(mainViewModel)
 }

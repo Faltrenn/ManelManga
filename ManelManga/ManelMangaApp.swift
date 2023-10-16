@@ -9,11 +9,11 @@ import SwiftUI
 
 @main
 struct ManelMangaApp: App {
+    @ObservedObject var mainViewModel = MainViewModel.shared
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(MainViewModel())
-//            TestView()
+                .environmentObject(mainViewModel)
         }
     }
 }

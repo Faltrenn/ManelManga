@@ -106,6 +106,7 @@ struct MangaCard: View {
 }
 
 #Preview{
-    ContentView()
-        .environmentObject(MainViewModel())
+    @ObservedObject var mainViewModel = MainViewModel.shared
+    return ContentView()
+        .environmentObject(mainViewModel)
 }

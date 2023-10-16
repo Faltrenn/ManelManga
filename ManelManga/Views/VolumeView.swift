@@ -43,15 +43,14 @@ struct VolumeView: View {
         }
         .onAppear {
             if !self.volume.downloaded {
-                self.volume.getImages {
-                    mainViewModel.saveMangas()
-                }
+                self.volume.getImages()
             }
         }
     }
 }
 
 #Preview {
-    ContentView()
-        .environmentObject(MainViewModel())
+    @ObservedObject var mainViewModel = MainViewModel.shared
+    return ContentView()
+        .environmentObject(mainViewModel)
 }
