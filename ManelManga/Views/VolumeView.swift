@@ -18,8 +18,8 @@ struct VolumeView: View {
             ScrollView {
                 VStack(spacing: 0) {
                     if volume.downloaded {
-                        ForEach(volume.downloadedImages, id: \.self) { image in
-                            AsyncImage(url: getImageURL(manga: manga, volume: volume, image: image)) { img in
+                        ForEach(volume.getDownloadedImagesURLs(manga: manga)!, id: \.self) { image in
+                            AsyncImage(url: image) { img in
                                 img
                                     .resizable()
                                     .scaledToFit()
@@ -42,7 +42,7 @@ struct VolumeView: View {
             }
         }
         .onAppear {
-            if self.volume.downloadedImages.count == 0 {
+            if !self.volume.downloaded {
                 self.volume.getImages {
                     mainViewModel.saveMangas()
                 }
@@ -51,9 +51,7 @@ struct VolumeView: View {
     }
 }
 
-struct VolumeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-            .environmentObject(MainViewModel())
-    }
+#Preview {
+    ContentView()
+        .environmentObject(MainViewModel())
 }

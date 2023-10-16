@@ -74,6 +74,13 @@ struct VolumeCard: View {
                         }
                         .animation(.easeIn, value: session.progress)
                 }
+            } else {
+                Button {
+                    manga.deleteVolume(volume: volume)
+                } label: {
+                    Image(systemName: "trash")
+                        .font(.title2)
+                }
             }
         }
         .frame(maxWidth: .infinity)
@@ -81,6 +88,7 @@ struct VolumeCard: View {
 }
 
 #Preview {
-    ContentView()
-        .environmentObject(MainViewModel())
+    let mainViewModel = MainViewModel()
+    return MangaView(manga: mainViewModel.mangas.first!)
+        .environmentObject(mainViewModel)
 }

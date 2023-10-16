@@ -7,15 +7,8 @@
 
 import Foundation
 
-func getMangaDirectory() -> URL {
+func getMangasDirectory() -> URL {
     return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Mangas", isDirectory: true)
-}
-
-func getImageURL(manga: MangaClass, volume: VolumeClass, image: String) -> URL {
-    return getMangaDirectory()
-        .appendingPathComponent(manga.name)
-        .appendingPathComponent(volume.name)
-        .appendingPathComponent(image)
 }
 
 struct Anime: Codable, Hashable {
@@ -103,6 +96,179 @@ struct Source: Codable, Hashable {
     var label: String
 }
 
+class AnimeClass: ObservableObject {
+    var name: String
+    var image: String
+    var link: String
+    @Published var episodes: [Episode]
+    
+    init(anime: Anime) {
+        self.name = anime.name
+        self.image = anime.image
+        self.link = anime.link
+        self.episodes = anime.episodes
+    }
+}
+
+class EpisodeClass: ObservableObject {
+    var name: String
+    var thumb: String
+    var videoLink: String
+    var downloads: DownloadedVideo = DownloadedVideo()
+    var visualized: Bool = false
+    
+    init(episode: Episode) {
+        self.name = episode.name
+        self.thumb = episode.thumb
+        self.videoLink = episode.videoLink
+        self.downloads = episode.downloads
+        self.visualized = episode.visualized
+    }
+    
+    func getStruct() -> Episode {
+        return Episode(name: self.name, thumb: self.thumb, videoLink: self.videoLink, downloads: self.downloads, visualized: self.visualized)
+    }
+}
+struct Manga: Codable, Hashable {
+    var name: String
+    var image: String
+    var link: String
+    var volumes: [Volume]
+    
+    func getClass() -> MangaClass {
+        return MangaClass(manga: self)
+    }
+}
+
+struct Volume: Codable, Hashable{
+    var name: String
+    var link: String
+    var images: [URL]
+    var downloadedImages: [String]
+    var downloaded: Bool
+    
+    func getClass() -> VolumeClass {
+        return VolumeClass(volume: self)
+    }
+}
+
+class MangaClass: ObservableObject, Hashable {
+    static func == (lhs: MangaClass, rhs: MangaClass) -> Bool {
+        return lhs.getStruct() == rhs.getStruct()
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.name)
+    }
+    
+    var name: String
+    var image: String
+    var link: String
+    @Published var volumes: [VolumeClass]
+    
+    init(manga: Manga) {
+        self.name = manga.name
+        self.image = manga.image
+        self.link = manga.link
+        self.volumes = []
+        for volume in manga.volumes {
+            volumes.append(volume.getClass())
+        }
+    }
+    
+    func getStruct() -> Manga {
+        var volumes: [Volume] = []
+        for volume in self.volumes {
+            volumes.append(volume.getStruct())
+        }
+        return Manga(name: self.name, image: self.image, link: self.link, volumes: volumes)
+    }
+    
+    func deleteVolume(volume: VolumeClass) {
+        if volume.downloaded {
+            do {
+                try FileManager.default.removeItem(at: volume.getDirectory(manga: self))
+            } catch { }
+            
+            volume.downloadedImages = []
+            volume.downloaded = false
+            
+            MainViewModel.instance?.saveMangas()
+        }
+    }
+    
+    func getDirectory() -> URL {
+        return getMangasDirectory().appendingPathComponent(self.name, isDirectory: true)
+    }
+}
+
+class VolumeClass: ObservableObject, Hashable {
+    static func == (lhs: VolumeClass, rhs: VolumeClass) -> Bool {
+        return lhs.name == rhs.name && lhs.link == rhs.link
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.name)
+    }
+    
+    var name: String
+    var link: String
+    @Published var images: [URL]
+    @Published var downloadedImages: [String]
+    @Published var downloaded: Bool
+    
+    init(volume: Volume) {
+        self.name = volume.name
+        self.link = volume.link
+        self.images = volume.images
+        self.downloadedImages = volume.downloadedImages
+        self.downloaded = volume.downloaded
+    }
+    
+    func getDownloadedImagesURLs(manga: MangaClass) -> [URL]? {
+        var urls: [URL] = []
+        for image in self.downloadedImages {
+            let path = self.getDirectory(manga: manga)
+                .appendingPathComponent(image)
+            if FileManager.default.fileExists(atPath: path.path(percentEncoded: false)) {
+                urls.append(path)
+            }
+        }
+        return urls.count > 0 ? urls : nil
+    }
+    
+    func getImages(completion: (() -> Void)? = nil) {
+        guard let url = URL(string: link) else { return }
+        self.images = []
+        URLSession.shared.dataTask(with: url) { data, _, error in
+            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
+                do {
+                    let imagesLinks = html.split(separator: "\\\"images\\\": ")[1].split(separator: "}")[0].replacing("\\", with: "")
+                    let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
+                    for image in images {
+                        if let imageUrl = URL(string: image) {
+                            DispatchQueue.main.async {
+                                self.images.append(imageUrl)
+                            }
+                        }
+                    }
+                    DispatchQueue.main.async {
+                        completion?()
+                    }
+                } catch { }
+            }
+        }.resume()
+    }
+    
+    func getStruct() -> Volume {
+        return Volume(name: self.name, link: self.link, images: self.images, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
+    }
+    
+    func getDirectory(manga: MangaClass) -> URL {
+        return manga.getDirectory().appendingPathComponent(self.name, isDirectory: true)
+    }
+}
+
 enum Pages: CaseIterable {
     case Anime, Manga
     
@@ -175,7 +341,7 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         
         self.mainViewModel = mainViewModel
         
-        let volumePath = getMangaDirectory().appendingPathComponent(manga.name, isDirectory: true).appendingPathComponent(volume.name, isDirectory: true)
+        let volumePath = volume.getDirectory(manga: manga)
         
         var isDir: ObjCBool = true
         do {
