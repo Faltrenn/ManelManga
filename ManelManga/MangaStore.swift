@@ -50,7 +50,7 @@ class MangaClass: ObservableObject, Hashable {
         return Manga(name: self.name, image: self.image, link: self.link, volumes: volumes)
     }
     
-    @MainActor func deleteVolume(volume: VolumeClass) {
+    func deleteVolume(volume: VolumeClass) {
         if volume.downloaded {
             do {
                 try FileManager.default.removeItem(at: volume.getDirectory(manga: self))

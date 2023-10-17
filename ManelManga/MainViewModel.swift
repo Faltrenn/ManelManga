@@ -85,32 +85,41 @@ class MainViewModel: ObservableObject {
             return
         }
         
-        URLSession.shared.dataTask(with: url) { data, _, error in
-            if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
-
-                do {
-                    let doc = try SwiftSoup.parse(html)
-                    let name = try doc.select("h2[class=film-name dynamic-name]").text()
-                    let image = try doc.select("div[class=anisc-poster] div img").attr("src")
-                    var episodes: [Episode] = []
-                    
-                    let mainElement = try doc.select("div[class=screen-items]").first()!
-                    let epsElements = try mainElement.select("div[class=item]").array()
-                    for epElement in epsElements {
-                        if let episode = self.getEpisode(epElement: epElement) {
-                            episodes.append(episode)
+        Task {
+            do {
+                let doc = try SwiftSoup.parse(String(contentsOf: url, encoding: .ascii))
+                let name = try doc.select("h2[class=film-name dynamic-name]").text()
+                let image = try doc.select("div[class=anisc-poster] div img").attr("src")
+                var episodes: [Episode] = []
+                
+                var epsElements = try doc.select("div[class=screen-items] div[class=item]").array()
+                
+                let pages = try doc.select("ul[class=pagination] li[class=page-item] a[class=page-link]").array()
+                
+                for page in pages {
+                    if Double(try page.text()) != nil, let url = URL(string: try page.attr("href")) {
+                        let doc2 = try SwiftSoup.parse(String(contentsOf: url, encoding: .ascii))
+                        
+                        for element in try doc2.select("div[class=screen-items] div[class=item]").array() {
+                            epsElements.append(element)
                         }
                     }
-                    
-                    let anime = Anime(name: name, image: image, link: doc.getBaseUri(), episodes: episodes).getClass()
-                    
-                    DispatchQueue.main.async {
-                        self.animes.append(anime)
-                        self.saveAnimes()
+                }
+                
+                for epElement in epsElements {
+                    if let episode = self.getEpisode(epElement: epElement) {
+                        episodes.append(episode)
                     }
-                } catch { }
-            }
-        }.resume()
+                }
+                
+                let anime = Anime(name: name, image: image, link: doc.getBaseUri(), episodes: episodes).getClass()
+                
+                DispatchQueue.main.async {
+                    self.animes.append(anime)
+                    self.saveAnimes()
+                }
+            } catch { }
+        }
     }
     
     func removeAnime(anime: AnimeClass) {
@@ -194,3 +203,7 @@ class MainViewModel: ObservableObject {
     }
 }
 
+#Preview {
+    ContentView()
+        .environmentObject(MainViewModel.shared)
+}

@@ -57,7 +57,7 @@ struct AnimeHomeView: View {
 }
 
 struct AddAnime: View {
-    @State var animelink = "https://animes.vision/animes/mieruko-chan-dublado"
+    @State var animelink = "https://animes.vision/animes/hunter-x-hunter-2011-dublado"
     
     var body: some View {
         TextField("Link do anime", text: $animelink)
