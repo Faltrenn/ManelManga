@@ -10,8 +10,9 @@ import AVKit
 import VideoPlayer
 
 struct EpisodeView: View {
-    let anime: Anime
-    let episode: Episode
+    let anime: AnimeClass
+    let episode: EpisodeClass
+    
     @State var source: [Source] = []
     @State var choice: Source? = nil
     @State var player = AVPlayer()
@@ -69,9 +70,6 @@ struct EpisodeView: View {
     }
 }
 
-struct EpisodeView_Previews: PreviewProvider {
-    static var previews: some View {
-//        ContentView()
-        EpisodeView(anime: Anime(name: "", image: "", link: "", episodes: []), episode: Episode(name: "", thumb: "", videoLink: "https://animes.vision/animes/bleach-sennen-kessen-hen-ketsubetsu-tan/episodio-03/legendado", downloads: DownloadedVideo()))
-    }
+#Preview {
+    EpisodeView(anime: MainViewModel.shared.animes.first!, episode: MainViewModel.shared.animes.first!.episodes.first!)
 }

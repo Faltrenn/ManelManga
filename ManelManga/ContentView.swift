@@ -11,8 +11,7 @@ import AVKit
 
 
 struct ContentView: View {
-    @ObservedObject var mainViewModel = MainViewModel.shared
-    @State var page: Pages = .Manga
+    @State var page: Pages = .Anime
     
     var body: some View {
         VStack {
@@ -22,9 +21,7 @@ struct ContentView: View {
             case .Manga:
                 MangaHomeView()
             }
-            VStack {
-                TabBar(page: $page)
-            }
+            TabBar(page: $page)
         }
     }
 }
@@ -51,8 +48,7 @@ struct TabBar: View {
     }
 }
 
-
 #Preview {
-    return ContentView()
+    ContentView()
         .environmentObject(MainViewModel.shared)
 }

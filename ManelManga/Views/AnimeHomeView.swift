@@ -12,14 +12,13 @@ import AVKit
 
 struct AnimeHomeView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
+    
     @State var animeLink = ""
     @State var link = ""
     @State var play = false
     @State var sources: [Source] = []
     @State var player = AVPlayer()
     @State var videoLink = ""
-    
-    @State var animes: [Anime] = []
     
     @State var isPresented = false
     
@@ -54,19 +53,10 @@ struct AnimeHomeView: View {
         .alert("Adicionar anime", isPresented: $isPresented) {
             AddAnime()
         }
-        .onAppear {
-            guard let data = UserDefaults.standard.data(forKey: "animes") else {
-                return
-            }
-            do {
-                animes = try JSONDecoder().decode([Anime].self, from: data)
-            } catch { }
-        }
     }
 }
 
 struct AddAnime: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
     @State var animelink = "https://animes.vision/animes/mieruko-chan-dublado"
     
     var body: some View {
@@ -75,7 +65,7 @@ struct AddAnime: View {
             .textCase(.none)
             .autocorrectionDisabled()
         Button("Adicionar") {
-            mainViewModel.addAnime(animelink: animelink)
+            MainViewModel.shared.addAnime(animelink: animelink)
             animelink = ""
         }
         Button("Cancelar", role: .cancel) { }
@@ -83,8 +73,7 @@ struct AddAnime: View {
 }
 
 struct AnimeCard: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    let anime: Anime
+    let anime: AnimeClass
     
     var body: some View {
         HStack {
@@ -110,10 +99,8 @@ struct AnimeCard: View {
                 HStack {
                     Spacer()
                     Button {
-                        mainViewModel.animes.removeAll { anm in
-                            anm == anime
-                        }
-                        mainViewModel.saveAnimes()
+                        MainViewModel.shared.removeAnime(anime: anime)
+                        MainViewModel.shared.saveAnimes()
                     } label: {
                         Circle()
                             .fill(.red)
@@ -133,8 +120,7 @@ struct AnimeCard: View {
     }
 }
 
-struct AnimeHomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
+        .environmentObject(MainViewModel.shared)
 }

@@ -9,8 +9,7 @@ import SwiftUI
 import SwiftSoup
 
 struct AnimeView: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    @State var anime: Anime
+    @State var anime: AnimeClass
     
     var body: some View {
         NavigationStack {
@@ -52,9 +51,8 @@ struct AnimeView: View {
 }
 
 struct EpisodeCard: View {
-    @EnvironmentObject var mainViewModel: MainViewModel
-    @Binding var anime: Anime
-    let episode: Episode
+    @Binding var anime: AnimeClass
+    let episode: EpisodeClass
     @State var sources: [Source]?
     
     @ObservedObject var session = MangaURLSession()
@@ -133,7 +131,7 @@ struct EpisodeCard: View {
             }
         }
         .onAppear {
-            mainViewModel.getSources(episodeLink: episode.videoLink) { sources in
+            MainViewModel.shared.getSources(episodeLink: episode.videoLink) { sources in
                 self.sources = sources
             }
         }
@@ -141,20 +139,5 @@ struct EpisodeCard: View {
 }
 
 #Preview {
-    return ContentView()
-        .environmentObject(MainViewModel.shared)
-//        AnimeView(anime: Anime(name: "Jujutsu Kaisen 2nd Season",
-//                               image: "https://animes.vision/storage/capa/WpyWcVumukyDxU4NOxiDzhdOZksAho2sWR23Fnzx.jpg",
-//                               link: "https://animes.vision/animes/one-piece",
-//                               episodes: [
-//                                Episode(name: "Name",
-//                                        thumb: "https://animes.vision/storage/screenshot/I9hvBcj20yfzZS4P0FYHdpB6D9fBoKoiTUEPAW9I.jpg",
-//                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-05/legendado",
-//                                        downloads: DownloadedVideo()),
-//                                Episode(name: "Name2",
-//                                        thumb: "https://animes.vision/storage/screenshot/2t7fJaUHcfHnOIThKZ21ICKa4E7kO98zqh5hPYyW.jpg",
-//                                        videoLink: "https://animes.vision/animes/jujutsu-kaisen-2nd-season/episodio-09/legendado",
-//                                        downloads: DownloadedVideo(SD: nil, HD: "", FHD: ""))
-//                               ]))
-//            .environmentObject(MainViewModel())
+    AnimeView(anime: MainViewModel.shared.animes.first!)
 }

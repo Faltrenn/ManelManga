@@ -83,6 +83,10 @@ struct Episode: Codable, Hashable {
     var videoLink: String
     var downloads: DownloadedVideo = DownloadedVideo()
     var visualized: Bool = false
+    
+    func getClass() -> EpisodeClass {
+        return EpisodeClass(episode: self)
+    }
 }
 
 class EpisodeClass: ObservableObject {
@@ -110,18 +114,41 @@ struct Anime: Codable, Hashable {
     var image: String
     var link: String
     var episodes: [Episode]
+    
+    func getClass() -> AnimeClass {
+        return AnimeClass(anime: self)
+    }
 }
 
-class AnimeClass: ObservableObject {
+class AnimeClass: ObservableObject, Hashable {
+    static func == (lhs: AnimeClass, rhs: AnimeClass) -> Bool {
+        return lhs.name == rhs.name && lhs.link == rhs.link
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.link)
+    }
+    
     var name: String
     var image: String
     var link: String
-    @Published var episodes: [Episode]
+    @Published var episodes: [EpisodeClass]
     
     init(anime: Anime) {
         self.name = anime.name
         self.image = anime.image
         self.link = anime.link
-        self.episodes = anime.episodes
+        self.episodes = []
+        for episode in anime.episodes {
+            self.episodes.append(episode.getClass())
+        }
+    }
+    
+    func getStruct() -> Anime {
+        var episodes: [Episode] = []
+        for episode in self.episodes {
+            episodes.append(Episode(name: episode.name, thumb: episode.thumb, videoLink: episode.videoLink, visualized: episode.visualized))
+        }
+        return Anime(name: self.name, image: self.image, link: self.link, episodes: episodes)
     }
 }
