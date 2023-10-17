@@ -11,7 +11,7 @@ import SwiftSoup
 struct VolumeView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     var manga: MangaClass
-    @ObservedObject var volume: VolumeClass
+    @State var volume: VolumeClass
     
     var body: some View {
         VStack {
@@ -37,6 +37,15 @@ struct VolumeView: View {
                                 ProgressView()
                             }
                         }
+                    }
+                    
+                    Button {
+                        if let volume = manga.getNextVolume(volume: volume) {
+                            self.volume = volume
+                        }
+                    } label: {
+                        Text("Next")
+                            .font(.title)
                     }
                 }
             }

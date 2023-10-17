@@ -66,6 +66,13 @@ class MangaClass: ObservableObject, Hashable {
     func getDirectory() -> URL {
         return getMangasDirectory().appendingPathComponent(self.name, isDirectory: true)
     }
+    
+    func getNextVolume(volume: VolumeClass) -> VolumeClass? {
+        if let id = self.volumes.firstIndex(of: volume), self.volumes.count > (id+1) {
+            return self.volumes[id+1]
+        }
+        return nil
+    }
 }
 
 struct Volume: Codable, Hashable{
