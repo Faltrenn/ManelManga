@@ -88,7 +88,6 @@ struct VolumeCard: View {
 }
 
 #Preview {
-    @ObservedObject var mainViewModel = MainViewModel.shared
-    return MangaView(manga: mainViewModel.mangas.first!)
-        .environmentObject(mainViewModel)
+    return MangaView(manga: MainViewModel.shared.mangas.first!)
+        .environmentObject(MainViewModel.shared)
 }

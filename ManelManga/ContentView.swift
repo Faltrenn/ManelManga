@@ -53,7 +53,6 @@ struct TabBar: View {
 
 
 #Preview {
-    @ObservedObject var mainViewModel = MainViewModel.shared
     return ContentView()
-        .environmentObject(mainViewModel)
+        .environmentObject(MainViewModel.shared)
 }

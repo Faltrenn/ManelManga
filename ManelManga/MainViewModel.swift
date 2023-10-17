@@ -27,7 +27,7 @@ class MainViewModel: ObservableObject {
     
     @Published private(set) var mangas: [MangaClass] = []
     
-    static var shared = MainViewModel()
+    @ObservedObject static var shared = MainViewModel()
     
     private init() {
         if let data = UserDefaults.standard.data(forKey: "animes") {
