@@ -13,31 +13,29 @@ struct MangaHomeView: View {
     @State var isPresented: Bool = false
     
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .topTrailing) {
-                Button {
-                    isPresented.toggle()
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50)
-                }
-                .zIndex(1)
-                .padding(.horizontal)
-                ScrollView {
-                    VStack(alignment: .leading) {
-                        ForEach(mainViewModel.mangas, id: \.self) { manga in
-                            NavigationLink {
-                                MangaView(manga: manga)
-                            } label: {
-                                MangaCard(manga: manga)
-                            }
+        ZStack(alignment: .topTrailing) {
+            Button {
+                isPresented.toggle()
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50)
+            }
+            .zIndex(1)
+            .padding(.horizontal)
+            ScrollView {
+                VStack(alignment: .leading) {
+                    ForEach(mainViewModel.mangas, id: \.self) { manga in
+                        NavigationLink {
+                            MangaView(manga: manga)
+                        } label: {
+                            MangaCard(manga: manga)
                         }
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 60)
                 }
+                .padding(.horizontal)
+                .padding(.top, 60)
             }
         }
         .alert("Adicionar manga", isPresented: $isPresented) {
@@ -48,12 +46,13 @@ struct MangaHomeView: View {
 
 struct AddManga: View {
     @EnvironmentObject var mainViewModel: MainViewModel
-    @State var mangaLink = "https://www.brmangas.net/manga/is-this-hero-for-real-online/"
+    @State var mangaLink = "" //"https://www.brmangas.net/manga/is-this-hero-for-real-online/"
     
     var body: some View {
         TextField("Link do mangá", text: $mangaLink)
         Button("Adicionar") {
             mainViewModel.addManga(mangaLink: mangaLink)
+            mangaLink = ""
         }
         Button("Cancelar", role: .cancel) { }
     }

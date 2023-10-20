@@ -78,7 +78,6 @@ class MangaClass: ObservableObject, Hashable {
 struct Volume: Codable, Hashable{
     var name: String
     var link: String
-    var images: [URL]
     var downloadedImages: [String]
     var downloaded: Bool
     
@@ -98,14 +97,12 @@ class VolumeClass: ObservableObject, Hashable {
     
     var name: String
     var link: String
-    @Published var images: [URL]
     @Published var downloadedImages: [String]
     @Published var downloaded: Bool
     
     init(volume: Volume) {
         self.name = volume.name
         self.link = volume.link
-        self.images = volume.images
         self.downloadedImages = volume.downloadedImages
         self.downloaded = volume.downloaded
     }
@@ -122,9 +119,9 @@ class VolumeClass: ObservableObject, Hashable {
         return urls.count > 0 ? urls : nil
     }
     
-    func getImages(completion: (() -> Void)? = nil) {
+    func getImages(completion: (([URL]) -> Void)? = nil) {
         guard let url = URL(string: link) else { return }
-        self.images = []
+        var imagesURLs: [URL] = []
         URLSession.shared.dataTask(with: url) { data, _, error in
             if let data = data, error == nil, let html = String(data: data, encoding: .utf8) {
                 do {
@@ -132,13 +129,11 @@ class VolumeClass: ObservableObject, Hashable {
                     let images = try JSONDecoder().decode([String].self, from: Data(imagesLinks.description.utf8))
                     for image in images {
                         if let imageUrl = URL(string: image) {
-                            DispatchQueue.main.async {
-                                self.images.append(imageUrl)
-                            }
+                            imagesURLs.append(imageUrl)
                         }
                     }
                     DispatchQueue.main.async {
-                        completion?()
+                        completion?(imagesURLs)
                     }
                 } catch { }
             }
@@ -146,7 +141,7 @@ class VolumeClass: ObservableObject, Hashable {
     }
     
     func getStruct() -> Volume {
-        return Volume(name: self.name, link: self.link, images: self.images, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
+        return Volume(name: self.name, link: self.link, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
     }
     
     func getDirectory(manga: MangaClass) -> URL {

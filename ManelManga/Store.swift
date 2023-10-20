@@ -78,9 +78,8 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
                 try FileManager.default.createDirectory(at: volumePath, withIntermediateDirectories: true)
             }
         } catch { }
-        
-        volume.getImages {
-            for (i, image) in volume.images.enumerated() {
+        volume.getImages { imagesURLs in
+            for (i, image) in imagesURLs.enumerated() {
                 let imageExtension = String(describing: image.absoluteString.split(separator: ".").last!)
                 let imageName = "Imagem \(i+1).\(imageExtension)"
                 self.elements.append(DownloadElement(url: image, saveAt: volumePath.appendingPathComponent(imageName), volume: volume))
@@ -123,6 +122,7 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
             DispatchQueue.main.async {
                 self.element!.volume.downloaded = true
                 self.reset()
+                MainViewModel.shared.saveMangas()
             }
         }
     }

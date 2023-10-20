@@ -23,31 +23,29 @@ struct AnimeHomeView: View {
     @State var isPresented = false
     
     var body: some View {
-        NavigationStack {
-            ZStack(alignment: .topTrailing) {
-                Button {
-                    isPresented.toggle()
-                } label: {
-                    Image(systemName: "plus.circle.fill")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50)
-                }
-                .zIndex(1)
-                .padding(.horizontal)
-                ScrollView {
-                    VStack {
-                        ForEach(mainViewModel.animes, id: \.self) { anime in
-                            NavigationLink {
-                                AnimeView(anime: anime)
-                            } label: {
-                                AnimeCard(anime: anime)
-                            }
+        ZStack(alignment: .topTrailing) {
+            Button {
+                isPresented.toggle()
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50)
+            }
+            .zIndex(1)
+            .padding(.horizontal)
+            ScrollView {
+                VStack {
+                    ForEach(mainViewModel.animes, id: \.self) { anime in
+                        NavigationLink {
+                            AnimeView(anime: anime)
+                        } label: {
+                            AnimeCard(anime: anime)
                         }
                     }
-                    .padding(.top, 60)
-                    .padding(.horizontal)
                 }
+                .padding(.top, 60)
+                .padding(.horizontal)
             }
         }
         .alert("Adicionar anime", isPresented: $isPresented) {

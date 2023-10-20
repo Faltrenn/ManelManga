@@ -53,7 +53,7 @@ class MainViewModel: ObservableObject {
                     
                     var volumes: [Volume] = []
                     for volume in volumesElements {
-                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), images: [], downloadedImages: [], downloaded: false))
+                        volumes.append(Volume(name: try volume.text(), link: try volume.attr("href"), downloadedImages: [], downloaded: false))
                     }
                     
                     DispatchQueue.main.async {

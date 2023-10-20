@@ -30,11 +30,11 @@ struct MangaView: View {
                                 }
                         }
                     }
-                    ForEach(manga.volumes, id: \.self) { volume in
+                    ForEach(0 ..< manga.volumes.count, id: \.self) { id in
                         NavigationLink {
-                            VolumeView(manga: manga, volume: volume)
+                            VolumeView(manga: manga, volumeID: id)
                         } label: {
-                            VolumeCard(manga: manga, volume: volume)
+                            VolumeCard(manga: manga, volume: manga.volumes[id])
                         }
                     }
                 }

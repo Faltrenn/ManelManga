@@ -11,17 +11,19 @@ import AVKit
 
 
 struct ContentView: View {
-    @State var page: Pages = .Anime
+    @State var page: Pages = .Manga
     
     var body: some View {
-        VStack {
-            switch page {
-            case .Anime:
-                AnimeHomeView()
-            case .Manga:
-                MangaHomeView()
+        NavigationStack {
+            VStack {
+                switch page {
+                case .Anime:
+                    AnimeHomeView()
+                case .Manga:
+                    MangaHomeView()
+                }
+                TabBar(page: $page)
             }
-            TabBar(page: $page)
         }
     }
 }

@@ -11,54 +11,71 @@ import SwiftSoup
 struct VolumeView: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     var manga: MangaClass
-    @State var volume: VolumeClass
+    
+    @State var volumeID: Int
+    
+    @State var images: [URL] = []
+    
+    @State var tabBarVisibility = false
     
     var body: some View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
-                    if volume.downloaded {
-                        ForEach(volume.getDownloadedImagesURLs(manga: manga)!, id: \.self) { image in
-                            AsyncImage(url: image) { img in
-                                img
-                                    .resizable()
-                                    .scaledToFit()
-                            } placeholder: {
-                                ProgressView()
-                            }
-                        }
-                    } else {
-                        ForEach(volume.images, id: \.self) { image in
-                            AsyncImage(url: image) { img in
-                                img
-                                    .resizable()
-                                    .scaledToFit()
-                            } placeholder: {
-                                ProgressView()
-                            }
+                    ForEach(images, id: \.self) { img in
+                        AsyncImage(url: img) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                        } placeholder: {
+                            ProgressView()
                         }
                     }
-                    
-                    Button {
-                        if let volume = manga.getNextVolume(volume: volume) {
-                            self.volume = volume
-                        }
-                    } label: {
-                        Text("Next")
-                            .font(.title)
+                    if volumeID + 1 < manga.volumes.count {
+                        Button {
+                            volumeID += 1
+                            getImages(volume: manga.volumes[volumeID])
+                        } label: {
+                            Text("Next")
+                                .font(.title)
+                        }.padding(.bottom)
                     }
                 }
             }
         }
+        .ignoresSafeArea()
+        .navigationBarBackButtonHidden(tabBarVisibility)
+        .animation(.easeIn, value: tabBarVisibility)
+        .onTapGesture {
+            tabBarVisibility.toggle()
+        }
         .onAppear {
-            if !self.volume.downloaded {
-                self.volume.getImages()
+            getImages(volume: manga.volumes[volumeID])
+        }
+    }
+    
+    func getImages(volume: VolumeClass) {
+        if !volume.downloaded {
+            volume.getImages { imagesURLs in
+                images = imagesURLs
             }
+        } else {
+            images = volume.getDownloadedImagesURLs(manga: manga) ?? []
         }
     }
 }
 
+//extension UINavigationController: UIGestureRecognizerDelegate {
+//    override open func viewDidLoad() {
+//        super.viewDidLoad()
+//        interactivePopGestureRecognizer?.delegate = self
+//    }
+//    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+//        return viewControllers.count > 1
+//    }
+//}
+
 #Preview {
-    return ContentView()
+    ContentView()
         .environmentObject(MainViewModel.shared)
 }
