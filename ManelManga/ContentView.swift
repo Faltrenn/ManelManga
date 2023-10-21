@@ -9,6 +9,11 @@ import SwiftUI
 import SwiftSoup
 import AVKit
 
+extension UIViewController {
+    func prefersStatusBarHidden() -> Bool {
+        return true
+    }
+}
 
 struct ContentView: View {
     @State var page: Pages = .Manga

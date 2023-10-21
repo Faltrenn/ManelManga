@@ -6,9 +6,10 @@
 //
 
 import Foundation
+import SwiftUI
 
 func getMangasDirectory() -> URL {
-    return FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Mangas", isDirectory: true)
+    FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Mangas", isDirectory: true)
 }
 
 enum Pages: CaseIterable {
@@ -40,17 +41,36 @@ enum Pages: CaseIterable {
     }
 }
 
+struct MangaURLQueue {
+    var manga: MangaClass
+    var volume: VolumeClass
+    var downloading: Binding<Bool>
+    var progress: Binding<CGFloat>
+}
+
 class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
     @Published public var downloadTask: URLSessionDownloadTask?
-    @Published public var progress: CGFloat = 0.0
+    @Binding private var downloading: Bool
+    @Binding private var progress: CGFloat
     
     private var element: DownloadElement?
     private var elements: [DownloadElement] = []
     private var downloadCount: Int = 0
     
+    private var queue: [MangaURLQueue] = []
+    
+    static var shared = MangaURLSession()
+    
+    private override init() {
+        self._downloading = .constant(false)
+        self._progress = .constant(.zero)
+        super.init()
+    }
+    
     private func reset() {
+        self.downloading = false
         self.downloadTask = nil
-        self.progress = 0.0
+        self.progress = .zero
         self.element = nil
         self.elements = []
         self.downloadCount = 0
@@ -61,38 +81,52 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
             DispatchQueue.main.async {
                 let parts = element.saveAt.absoluteString.split(separator: "/")
                 element.volume.downloadedImages.append(String(data: parts.last!.removingPercentEncoding!.data(using: .utf8)!, encoding: .utf8)!)
-                MainViewModel.shared.saveMangas()
             }
         }
     }
     
-    func downloadVolume(manga: MangaClass, volume: VolumeClass) {
-        self.reset()
+    func addVolumeToQueue(manga: MangaClass, volume: VolumeClass, downloading: Binding<Bool>, progress: Binding<CGFloat>) {
+        self.queue.append(MangaURLQueue(manga: manga, volume: volume, downloading: downloading, progress: progress))
+        self.startDownload()
+    }
+    
+    private func downloadVolume(manga: MangaClass, volume: VolumeClass) {
         volume.downloadedImages = []
         
-        let volumePath = volume.getDirectory(manga: manga)
-        
-        var isDir: ObjCBool = true
-        do {
-            if !FileManager.default.fileExists(atPath: volumePath.path(), isDirectory: &isDir) {
-                try FileManager.default.createDirectory(at: volumePath, withIntermediateDirectories: true)
+        DispatchQueue.main.async {
+            let volumePath = volume.getDirectory(manga: manga)
+            
+            var isDir: ObjCBool = true
+            do {
+                if !FileManager.default.fileExists(atPath: volumePath.path(), isDirectory: &isDir) {
+                    try FileManager.default.createDirectory(at: volumePath, withIntermediateDirectories: true)
+                }
+            } catch { }
+            volume.getImages { imagesURLs in
+                for (i, image) in imagesURLs.enumerated() {
+                    let imageExtension = String(describing: image.absoluteString.split(separator: ".").last!)
+                    let imageName = "Imagem \(i+1).\(imageExtension)"
+                    self.elements.append(DownloadElement(url: image, saveAt: volumePath.appendingPathComponent(imageName), volume: volume))
+                }
+                self.downloadImage()
             }
-        } catch { }
-        volume.getImages { imagesURLs in
-            for (i, image) in imagesURLs.enumerated() {
-                let imageExtension = String(describing: image.absoluteString.split(separator: ".").last!)
-                let imageName = "Imagem \(i+1).\(imageExtension)"
-                self.elements.append(DownloadElement(url: image, saveAt: volumePath.appendingPathComponent(imageName), volume: volume))
-            }
-            self.startDownload()
         }
+    }
+    
+    private func downloadImage() {
+        self.element = self.elements[self.downloadCount]
+        self.downloadTask = URLSession(configuration: .default, delegate: self, delegateQueue: nil).downloadTask(with: self.element!.url)
+        self.downloadTask!.resume()
     }
     
     private func startDownload() {
-        self.element = self.elements[self.downloadCount]
-        DispatchQueue.main.async {
-            self.downloadTask = URLSession(configuration: .default, delegate: self, delegateQueue: nil).downloadTask(with: self.element!.url)
-            self.downloadTask!.resume()
+        if !self.downloading {
+            if let queueElement = self.queue.first {
+                self._downloading = queueElement.downloading
+                self._progress = queueElement.progress
+                self.downloading = true
+                self.downloadVolume(manga: queueElement.manga, volume: queueElement.volume)
+            }
         }
     }
     
@@ -117,11 +151,13 @@ class MangaURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
         self.saveVolume()
 
         if self.downloadCount < self.elements.count {
-            self.startDownload()
+            self.downloadImage()
         } else {
             DispatchQueue.main.async {
                 self.element!.volume.downloaded = true
                 self.reset()
+                self.queue.remove(at: 0)
+                self.startDownload()
                 MainViewModel.shared.saveMangas()
             }
         }

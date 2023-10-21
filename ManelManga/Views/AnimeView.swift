@@ -55,8 +55,6 @@ struct EpisodeCard: View {
     let episode: EpisodeClass
     @State var sources: [Source]?
     
-    @ObservedObject var session = MangaURLSession()
-    
     var body: some View {
         HStack(spacing: 15) {
             AsyncImage(url: URL(string: episode.thumb)) { image in
@@ -101,30 +99,30 @@ struct EpisodeCard: View {
                                     .font(.title3)
                                     .bold()
                                     .padding(5)
-                                    .overlay {
-                                        if session.downloadTask != nil {
-                                            Circle()
-                                                .stroke(.gray, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                                .rotationEffect(Angle(degrees: -90))
-                                            Circle()
-                                                .trim(from: 0, to: session.progress)
-                                                .stroke(.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
-                                                .rotationEffect(Angle(degrees: -90))
-                                                .animation(.easeIn(duration: 0.15), value: session.progress)
-                                        }
-                                        if episode.downloads.get() != nil {
-                                            Image(systemName: "checkmark.circle.fill")
-                                                .font(.system(size: 12))
-                                                .offset(CGSize(width: 10, height: -10))
-                                        }
-                                    }
+//                                    .overlay {
+//                                        if session.downloadTask != nil {
+//                                            Circle()
+//                                                .stroke(.gray, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+//                                                .rotationEffect(Angle(degrees: -90))
+//                                            Circle()
+//                                                .trim(from: 0, to: session.progress)
+//                                                .stroke(.blue, style: StrokeStyle(lineWidth: 3, lineCap: .round))
+//                                                .rotationEffect(Angle(degrees: -90))
+//                                                .animation(.easeIn(duration: 0.15), value: session.progress)
+//                                        }
+//                                        if episode.downloads.get() != nil {
+//                                            Image(systemName: "checkmark.circle.fill")
+//                                                .font(.system(size: 12))
+//                                                .offset(CGSize(width: 10, height: -10))
+//                                        }
+//                                    }
                             }
                         }
                     }
                     Image(systemName: "ellipsis")
                         .bold()
                         .onTapGesture {
-                            session.resume()
+//                            session.resume()
                         }
                 }
                 .font(.title2)

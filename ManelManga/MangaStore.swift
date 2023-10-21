@@ -64,7 +64,7 @@ class MangaClass: ObservableObject, Hashable {
     }
     
     func getDirectory() -> URL {
-        return getMangasDirectory().appendingPathComponent(self.name, isDirectory: true)
+        getMangasDirectory().appendingPathComponent(self.name, isDirectory: true)
     }
     
     func getNextVolume(volume: VolumeClass) -> VolumeClass? {
@@ -141,11 +141,11 @@ class VolumeClass: ObservableObject, Hashable {
     }
     
     func getStruct() -> Volume {
-        return Volume(name: self.name, link: self.link, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
+        Volume(name: self.name, link: self.link, downloadedImages: self.downloadedImages, downloaded: self.downloaded)
     }
     
     func getDirectory(manga: MangaClass) -> URL {
-        return manga.getDirectory().appendingPathComponent(self.name, isDirectory: true)
+        manga.getDirectory().appendingPathComponent(self.name, isDirectory: true)
     }
 }
 

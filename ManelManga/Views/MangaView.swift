@@ -47,7 +47,10 @@ struct VolumeCard: View {
     @EnvironmentObject var mainViewModel: MainViewModel
     @ObservedObject var manga: MangaClass
     @ObservedObject var volume: VolumeClass
-    @ObservedObject var session = MangaURLSession()
+    
+    @State var downloading: Bool = false
+    @State var progress: CGFloat = .zero
+    
     
     var body: some View {
         HStack {
@@ -56,23 +59,24 @@ struct VolumeCard: View {
                 .bold()
             if !volume.downloaded {
                 Button {
-                    session.downloadVolume(manga: manga, volume: volume)
+                    MangaURLSession.shared.addVolumeToQueue(manga: manga, volume: volume, downloading: $downloading, progress: $progress)
+                    downloading = true
                 } label: {
                     Image(systemName: "arrow.down.to.line")
                         .font(.title2)
                         .bold()
                         .padding(6)
                         .overlay {
-                            if session.downloadTask != nil {
+                            if downloading {
                                 Circle()
                                     .stroke(.gray, style: StrokeStyle(lineWidth: 3))
                                 Circle()
-                                    .trim(from: 0, to: session.progress)
+                                    .trim(from: 0, to: progress)
                                     .stroke(.blue, style: StrokeStyle(lineWidth: 3))
                                     .rotationEffect(Angle(degrees: -90))
                             }
                         }
-                        .animation(.easeIn, value: session.progress)
+                        .animation(.easeIn, value: progress)
                 }
             } else {
                 Button {
@@ -88,6 +92,6 @@ struct VolumeCard: View {
 }
 
 #Preview {
-    return MangaView(manga: MainViewModel.shared.mangas.first!)
+    MangaView(manga: MainViewModel.shared.mangas.first!)
         .environmentObject(MainViewModel.shared)
 }

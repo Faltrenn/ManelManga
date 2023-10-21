@@ -44,6 +44,7 @@ struct VolumeView: View {
             }
         }
         .ignoresSafeArea()
+        .statusBarHidden(tabBarVisibility)
         .navigationBarBackButtonHidden(tabBarVisibility)
         .animation(.easeIn, value: tabBarVisibility)
         .onTapGesture {
@@ -76,6 +77,6 @@ struct VolumeView: View {
 //}
 
 #Preview {
-    ContentView()
+    VolumeView(manga: MainViewModel.shared.mangas[1], volumeID: 0)
         .environmentObject(MainViewModel.shared)
 }
