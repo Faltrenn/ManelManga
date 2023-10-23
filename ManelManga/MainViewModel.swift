@@ -21,15 +21,8 @@ class MainViewModel: ObservableObject {
         if let data = UserDefaults.standard.data(forKey: "animes") {
             do {
                 for anime in try JSONDecoder().decode([Anime].self, from: data) {
-                    let animeClass = anime.getClass()
-                    for ep in animeClass.episodes {
-                        if let fileName = ep.downloads.get() {
-                            print("Ep \(ep.name), \(fileName)")
-                        }
-                    }
-                    self.animes.append(animeClass)
+                    self.animes.append(anime.getClass())
                 }
-                print("Animes recuperados")
             } catch { }
         }
         
