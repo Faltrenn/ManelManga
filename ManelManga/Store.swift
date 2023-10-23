@@ -12,6 +12,10 @@ func getMangasDirectory() -> URL {
     FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Mangas", isDirectory: true)
 }
 
+func getAnimesDirectory() -> URL {
+    FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!.appendingPathComponent("Animes", isDirectory: true)
+}
+
 enum Pages: CaseIterable {
     case Anime, Manga
     

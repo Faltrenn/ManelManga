@@ -119,6 +119,6 @@ struct AnimeCard: View {
 }
 
 #Preview {
-    ContentView()
+    ContentView(page: .Anime)
         .environmentObject(MainViewModel.shared)
 }

@@ -22,8 +22,6 @@ struct EpisodeView: View {
     @State var hideControls = false
     let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     
-    var teste: AVRouteDetector = AVRouteDetector()
-    
     var body: some View {
         VStack {
             AnimePlayer(player: $player, play: $play, time: $seconds, fullscreen: $fullscreen, hideControls: $hideControls)
@@ -43,10 +41,8 @@ struct EpisodeView: View {
     }
     
     func getEpisode() {
-        if let url = episode.downloads.get() {
-            let documentsURL = URL(string: url)!
-            let asset = AVURLAsset(url: documentsURL)
-            
+        if let episodeURL = anime.getDownloadedEpisodePath(episode: episode) {
+            let asset = AVURLAsset(url: episodeURL)
             player.replaceCurrentItem(with: AVPlayerItem(asset: asset))
         } else {
             guard let url = URL(string: episode.videoLink) else {

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum VideoQuality: CaseIterable {
     case SD, HD, FHD
@@ -35,15 +36,15 @@ struct DownloadedVideo: Codable, Hashable {
     var HD: String? = nil
     var FHD: String? = nil
     
-    mutating func set(source: Source, url: URL) {
+    mutating func set(source: Source, fileName: String) {
         if let quality = VideoQuality.getQuality(source: source) {
             switch quality {
             case .SD:
-                SD = url.absoluteString
+                SD = fileName
             case .HD:
-                HD = url.absoluteString
+                HD = fileName
             case .FHD:
-                FHD = url.absoluteString
+                FHD = fileName
             }
         }
         //MARK: Testar
@@ -101,7 +102,14 @@ class EpisodeClass: ObservableObject {
         self.thumb = episode.thumb
         self.videoLink = episode.videoLink
         self.downloads = episode.downloads
+        if let fileName = episode.downloads.get() {
+            print(episode.name , "Baixado: ", fileName)
+        }
         self.visualized = episode.visualized
+    }
+    
+    func getDirectory(anime: AnimeClass) -> URL {
+        anime.getDirectory().appendingPathComponent(self.name, isDirectory: true)
     }
     
     func getStruct() -> Episode {
@@ -144,11 +152,127 @@ class AnimeClass: ObservableObject, Hashable {
         }
     }
     
+    func getDownloadedEpisodePath(episode: EpisodeClass, quality: VideoQuality? = nil) -> URL? {
+        if let fileName = episode.downloads.get(quality: quality) {
+            return episode.getDirectory(anime: self).appendingPathComponent(fileName)
+        }
+        return nil
+    }
+    
+    func getDirectory() -> URL {
+        getAnimesDirectory().appendingPathComponent(self.name, isDirectory: true)
+    }
+    
     func getStruct() -> Anime {
         var episodes: [Episode] = []
         for episode in self.episodes {
-            episodes.append(Episode(name: episode.name, thumb: episode.thumb, videoLink: episode.videoLink, visualized: episode.visualized))
+            episodes.append(Episode(name: episode.name, thumb: episode.thumb, videoLink: episode.videoLink, downloads: episode.downloads, visualized: episode.visualized))
         }
         return Anime(name: self.name, image: self.image, link: self.link, episodes: episodes)
+    }
+}
+
+struct AnimeURLQueue {
+    var anime: AnimeClass
+    var episode: EpisodeClass
+    var source: Source
+    var downloading: Binding<Bool>
+    var progress: Binding<CGFloat>
+}
+
+struct AnimeDownloadElement {
+    let source: Source
+    let saveAt: URL
+    var episode: EpisodeClass
+}
+
+class AnimeURLSession: NSObject, ObservableObject, URLSessionDownloadDelegate {
+    private var downloadTask: URLSessionDownloadTask? = nil
+    @Binding var progress: CGFloat
+    @Binding var downloading: Bool
+    
+    private var element: AnimeDownloadElement? = nil
+    
+    private var queue: [AnimeURLQueue] = []
+    
+    static var shared = AnimeURLSession()
+    
+    private override init() {
+        self._progress = .constant(.zero)
+        self._downloading = .constant(false)
+    }
+    
+    func addEpisodeToQueue(anime: AnimeClass, episode: EpisodeClass, source: Source, downloading: Binding<Bool>, progress: Binding<CGFloat>) {
+        self.queue.append(AnimeURLQueue(anime: anime, episode: episode, source: source, downloading: downloading, progress: progress))
+        self.startDownload()
+    }
+    
+    private func startDownload() {
+        if !self.downloading {
+            if let queueElement = self.queue.first {
+                let animePath = queueElement.episode.getDirectory(anime: queueElement.anime)
+                do {
+                    try FileManager.default.createDirectory(at: animePath, withIntermediateDirectories: true)
+                } catch { }
+                
+                let episodeFileName = "\(queueElement.episode.name) \(queueElement.source.label).\(queueElement.source.type.split(separator: "/")[1])"
+
+                self.element = AnimeDownloadElement(source: queueElement.source,
+                                                    saveAt: animePath.appendingPathComponent(episodeFileName),
+                                                    episode: queueElement.episode)
+                self._downloading = queueElement.downloading
+                self._progress = queueElement.progress
+                self.downloading = true
+                self.downloadTask = URLSession(configuration: .default, delegate: self, delegateQueue: nil).downloadTask(with: URL(string: queueElement.source.file)!)
+                self.downloadTask?.resume()
+            }
+        }
+    }
+    
+    private func reset() {
+        self.downloading = false
+        self.downloadTask = nil
+        self.element = nil
+        self.progress = .zero
+    }
+    
+    private func saveEpisode() {
+        if let element = self.element {
+            element.episode.downloads.set(source: element.source, fileName: element.saveAt.lastPathComponent)
+            MainViewModel.shared.saveAnimes()
+        }
+    }
+    
+    func cancel() {
+        downloadTask?.cancel()
+    }
+    func pause() {
+        downloadTask?.progress.pause()
+    }
+    func resume() {
+        downloadTask?.resume()
+    }
+    
+    // Finish
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didFinishDownloadingTo location: URL) {
+        if let element = self.element {
+            do {
+                try FileManager.default.moveItem(at: location, to: element.saveAt)
+            } catch { }
+            
+            self.saveEpisode()
+            
+            self.queue.removeFirst()
+            self.reset()
+            self.startDownload()
+        }
+    }
+    
+    // Change
+    func urlSession(_ session: URLSession, downloadTask: URLSessionDownloadTask, didWriteData bytesWritten: Int64, totalBytesWritten: Int64, totalBytesExpectedToWrite: Int64) {
+        let progress = CGFloat(totalBytesWritten) / CGFloat(totalBytesExpectedToWrite)
+        DispatchQueue.main.async {
+            self.progress = progress
+        }
     }
 }
