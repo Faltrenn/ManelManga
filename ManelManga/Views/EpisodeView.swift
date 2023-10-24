@@ -8,20 +8,6 @@
 import SwiftUI
 import AVKit
 
-extension View {
-    func unlockRotation() -> some View {
-        onAppear {
-            AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
-            UIViewController.attemptRotationToDeviceOrientation()
-        }
-        .onDisappear {
-            AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
-            UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
-            UIViewController.attemptRotationToDeviceOrientation()
-        }
-    }
-}
-
 struct EpisodeView: View {
     let anime: AnimeClass
     let episode: EpisodeClass

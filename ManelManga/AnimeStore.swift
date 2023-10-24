@@ -102,9 +102,6 @@ class EpisodeClass: ObservableObject {
         self.thumb = episode.thumb
         self.videoLink = episode.videoLink
         self.downloads = episode.downloads
-        if let fileName = episode.downloads.get() {
-            print(episode.name , "Baixado: ", fileName)
-        }
         self.visualized = episode.visualized
     }
     

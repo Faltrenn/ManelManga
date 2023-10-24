@@ -22,6 +22,10 @@ struct CustomPlayer: UIViewControllerRepresentable {
         player.preventsDisplaySleepDuringVideoPlayback = true
         player.allowsExternalPlayback = true
         
+        do {
+            try AVAudioSession.sharedInstance().setCategory(.playback)
+        } catch { }
+        
         controller.player = player
         
         return controller
@@ -127,7 +131,7 @@ struct CustomPlayerControls: View {
                         .font(.title3)
                         .onTapGesture {
                             fullscreen.toggle()
-                            AppDelegate.orientationLock = fullscreen ? UIInterfaceOrientationMask.landscapeRight : UIInterfaceOrientationMask.portrait
+                            AppDelegate.orientationLock = fullscreen ? UIInterfaceOrientationMask.landscape : UIInterfaceOrientationMask.portrait
                         }
                     Spacer()
                 }
