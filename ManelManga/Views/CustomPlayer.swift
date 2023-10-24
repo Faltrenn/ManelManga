@@ -46,7 +46,7 @@ struct AnimePlayer: View {
                 hideControls.toggle()
             }
             .overlay {
-                CustomPlayerControls(fullscreen: self.$fullscreen, play: self.$play, time: self.$time, hideControls: $hideControls)
+                CustomPlayerControls(player: $player, fullscreen: self.$fullscreen, play: self.$play, time: self.$time, hideControls: $hideControls)
             }.onReceive(timer) { _ in
                 time = self.player.currentTime().seconds
             }
@@ -75,10 +75,13 @@ struct AirPlayView: UIViewRepresentable {
 }
 
 struct CustomPlayerControls: View {
+    @Binding var player: AVPlayer
     @Binding var fullscreen: Bool
     @Binding var play: Bool
     @Binding var time: Double
     @Binding var hideControls: Bool
+    
+    let increment = CMTime(seconds: 10, preferredTimescale: 1)
     
     var body: some View {
         ZStack {
@@ -86,19 +89,45 @@ struct CustomPlayerControls: View {
                 .onTapGesture {
                     hideControls.toggle()
                 }
-            Image(systemName: play ? "pause.fill" : "play.fill")
-                .resizable()
-                .frame(width: 35, height: 35)
-                .onTapGesture {
-                    play.toggle()
+            HStack {
+                Spacer()
+                
+                Button {
+                    player.seek(to: player.currentTime() - increment)
+                } label: {
+                    Image(systemName: "return.right")
+                        .rotationEffect(.degrees(180))
                 }
-                .zIndex(1)
+                
+                Spacer()
+                
+                Image(systemName: play ? "pause.fill" : "play.fill")
+                    .resizable()
+                    .frame(width: 35, height: 35)
+                    .onTapGesture {
+                        play.toggle()
+                    }
+                    .zIndex(1)
+                
+                Spacer()
+                
+                Button {
+                    player.seek(to: player.currentTime() + increment)
+                } label: {
+                    Image(systemName: "return.left")
+                        .rotationEffect(.degrees(180))
+                }
+                
+                Spacer()
+            }
+            .font(.title2)
             VStack {
                 HStack {
                     Image(systemName: fullscreen ? "arrow.down.right.and.arrow.up.left": "arrow.up.left.and.arrow.down.right")
                         .font(.title3)
                         .onTapGesture {
                             fullscreen.toggle()
+                            AppDelegate.orientationLock = fullscreen ? UIInterfaceOrientationMask.landscapeRight : UIInterfaceOrientationMask.portrait
                         }
                     Spacer()
                 }
@@ -106,7 +135,7 @@ struct CustomPlayerControls: View {
                 HStack {
                     Text(getTime(timeInSeconds: time))
                     Spacer()
-                    Text(getTime(timeInSeconds: 20))
+                    Text(getTime(timeInSeconds: player.currentItem?.duration.seconds ?? 0))
                     AirPlayView()
                         .frame(width: 40, height: 40)
                 }
@@ -121,33 +150,14 @@ struct CustomPlayerControls: View {
         var minutes: Double = 0
         var seconds: Double = 0
         if !timeInSeconds.isNaN {
-            minutes = timeInSeconds / 60
-            seconds = timeInSeconds.truncatingRemainder(dividingBy: 60)
+            minutes = Double(Int(timeInSeconds / 60))
+            seconds = timeInSeconds - (minutes * 60)
         }
-        return String(format: "%02.0f:%02.0f", minutes, seconds)
-        
+        return String(format: "%02.0f:%02.0f", minutes, floor(seconds))
     }
 }
 
-struct Preview: View {
-    @State var player = AVPlayer(url: URL(string: "https://cdn-2.tanoshi.digital/stream/T/Tomo-chan_wa_Onnanoko_Dublado/480p/AnV-01.mp4?md5=P8k_A0bgNKYihZINWueUyQ&expires=1695436648")!)
-    @State var play = false
-    @State var time: Double = 0
-    @State var fullscreen = false
-    @State var hideControls = false
-    var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    
-    var body: some View {
-        VStack {
-            AnimePlayer(player: $player, play: $play, time: $time, fullscreen: $fullscreen, hideControls: $hideControls)
-            Spacer()
-        }
-    }
+#Preview {
+    EpisodeView(anime: MainViewModel.shared.animes[1], episode: MainViewModel.shared.animes[1].episodes.first!)
 }
 
-
-struct CustomPlayer_Previews: PreviewProvider {
-    static var previews: some View {
-        Preview()
-    }
-}

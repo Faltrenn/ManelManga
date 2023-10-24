@@ -7,7 +7,20 @@
 
 import SwiftUI
 import AVKit
-import VideoPlayer
+
+extension View {
+    func unlockRotation() -> some View {
+        onAppear {
+            AppDelegate.orientationLock = UIInterfaceOrientationMask.allButUpsideDown
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
+        .onDisappear {
+            AppDelegate.orientationLock = UIInterfaceOrientationMask.portrait
+            UIDevice.current.setValue(UIInterfaceOrientation.landscapeRight.rawValue, forKey: "orientation")
+            UIViewController.attemptRotationToDeviceOrientation()
+        }
+    }
+}
 
 struct EpisodeView: View {
     let anime: AnimeClass
@@ -26,6 +39,10 @@ struct EpisodeView: View {
         VStack {
             AnimePlayer(player: $player, play: $play, time: $seconds, fullscreen: $fullscreen, hideControls: $hideControls)
                 .aspectRatio(CGSize(width: 16, height: 9), contentMode: .fit)
+                .fullScreenCover(isPresented: $fullscreen, content: {
+                    AnimePlayer(player: $player, play: $play, time: $seconds, fullscreen: $fullscreen, hideControls: $hideControls)
+                        .ignoresSafeArea()
+                })
             Spacer()
         }
         .onReceive(timer) { newValue in
@@ -67,5 +84,5 @@ struct EpisodeView: View {
 }
 
 #Preview {
-    EpisodeView(anime: MainViewModel.shared.animes.first!, episode: MainViewModel.shared.animes.first!.episodes.first!)
+    EpisodeView(anime: MainViewModel.shared.animes[1], episode: MainViewModel.shared.animes[1].episodes.first!)
 }
